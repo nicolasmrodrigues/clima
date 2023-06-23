@@ -1,34 +1,31 @@
 <script setup>
 import { onMounted, reactive, ref } from 'vue';
 import Formulario from './components/Formulario.vue'
-import { x } from 'plotly.js-dist';
-import { add } from 'plotly.js-dist';
 
-const apiKey = 'bfb6cd82b7961aa3ba0fcd96665b5e68';
-const baseUrl = 'https://api.openweathermap.org/data/2.5/weather';
-const baseMultiDays = 'https://api.openweathermap.org/data/2.5/forecast';
-const baseIconUrl = 'https://openweathermap.org/img/wn/'
+const apiKey = 'c5730d43197b4199a5d174227232306';
+const curretWeatherBaseUrl = 'https://api.weatherapi.com/v1/current.json?';
+const forecastBaseUrl = 'https://api.weatherapi.com/v1/forecast.json?';
+const iconBaseUrl = 'https://cdn.weatherapi.com/weather/128x128/';
 
 const WeekDays = ['Dom', 'Seg', 'Terç', 'Qua', 'Qui', 'Sex', 'Sáb']
 const months = ['Jan', 'Fev', 'Mar', 'Abr', 'Maio', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez']
 
 const info = reactive({
   city: '',
-  requestDate: '',
-  iconUrl: '',
-  weatherDescription: '',
+  forecastAverageTemperature: [0, 0, 0],
   humidity: 0,
-  wind: 0,
+  iconUrl: '',
   isReadyToShowUp: false,
-  daysAverageTemperature: [21, 22, 22, 22]
+  requestDate: '',
+  weatherDescription: '',
+  wind: 0
 })
 
 function getCityData() {
-  const url = `${baseUrl}?q=${info.city}&units=metric&lang=pt_br&appid=${apiKey}`;
-  fetch(url).then(response => {
-    response.json().then(response => {
-      const jsonData = response;
-      info.iconUrl = `${baseIconUrl}${jsonData.weather[0].icon}@4x.png`;
+  const curretWeatherUrl = `${curretWeatherBaseUrl}q=${info.city}&lang=pt&key=${apiKey}`;
+  fetch(curretWeatherUrl).then(response => {
+    response.json().then(jsonData => {
+      info.iconUrl = `${iconBaseUrl}${jsonData.current.condition.icon.slice(35, 46)}`
       const date = new Date();
 
       if (date.getHours() >= 13) {
@@ -38,8 +35,6 @@ function getCityData() {
         } else {
           info.requestDate += `:${date.getMinutes()} PM`
         }
-
-
       } else {
         info.requestDate = `${date.getHours()}`
         if (date.getMinutes() < 10) {
@@ -47,39 +42,25 @@ function getCityData() {
         } else {
           info.requestDate += `:${date.getMinutes()} AM`
         }
-
       }
 
       info.requestDate += `, ${WeekDays[date.getDay()]}`
       info.requestDate += `, ${months[date.getMonth()]}, ${date.getDate()}, ${date.getFullYear()}`
 
-      info.weatherDescription = jsonData.weather[0].description
-      info.humidity = jsonData.main.humidity
-      info.wind = jsonData.wind.speed
+      info.weatherDescription = jsonData.current.condition.text
+      info.currentHumidity = jsonData.current.humidity
+      info.wind = jsonData.current.wind_kph
 
-      const mutltiDaysUrl = `${baseMultiDays}?lat=${jsonData.coord.lat}&lon=${jsonData.coord.lon}&units=metric&lang=pt_br&appid=${apiKey}`;
-      fetch(mutltiDaysUrl).then(response => {
-        response.json().then(response => {
-          const mutltiDaysJsonData = response;
-          let mutltiDaysForecast = [];
-          let mutltiDaysForecastAvaregeTemperature = [0, 0, 0, 0]
-          mutltiDaysJsonData.list.forEach(forecast => {
-            const forecastDay = forecast.dt_txt.slice(8, 10)
+      const forecastUrl = `${forecastBaseUrl}q=${info.city}&lang=pt&days=3&key=${apiKey}`;
+      fetch(forecastUrl).then(response => {
+        response.json().then(jsonData => {
+          let forecastjsonData = jsonData.forecast.forecastday
+          let forecast = [...forecastjsonData];
 
-            if (forecastDay > date.getDate() && forecastDay != date.getDate() + 5) {
-              mutltiDaysForecast.push(forecast)
-            }
-          })
-
-          for (let i = 1; i <= mutltiDaysForecast.length; i++) {
-            const index = Math.ceil(i / 8) - 1;
-            mutltiDaysForecastAvaregeTemperature[index] += Math.ceil(mutltiDaysForecast[i - 1].main.temp);
+          for (let i = 0; i < forecast.length; i++) {
+            info.forecastAverageTemperature[i] = Math.round(forecast[i].day.avgtemp_c)
           }
 
-          for (let i = 0; i < mutltiDaysForecastAvaregeTemperature.length; i++) {
-            mutltiDaysForecastAvaregeTemperature[i] = Math.ceil(mutltiDaysForecastAvaregeTemperature[i] / 8);
-          }
-          info.daysAverageTemperature = mutltiDaysForecastAvaregeTemperature
           drawGraph()
           info.isReadyToShowUp = true
         })
@@ -96,9 +77,10 @@ function drawGraph() {
   let indexOfDayToday = WeekDays.indexOf(dayToday)
 
   let xValues = []
-  let yValues = info.daysAverageTemperature
+  console.log(info.forecastAverageTemperature)
+  let yValues = info.forecastAverageTemperature
 
-  for (let i = 0; i < 4; i++) {
+  for (let i = 0; i < 3; i++) {
     addToIndex += 1
     if (indexOfDayToday + addToIndex === 7) {
       indexOfDayToday = 0;
@@ -162,10 +144,10 @@ function drawGraph() {
         </div>
         <div class="row ps-4">
           <div class="col-md-6 text-center pe-0">
-            <span class="fw-semibold fs-2">{{ info.humidity }}%</span>
+            <span class="fw-semibold fs-2">{{ info.currentHumidity }}%</span>
           </div>
           <div class="col-md-6 text-center pe-5">
-            <span class="fw-semibold fs-2">{{ info.wind }} m/s</span>
+            <span class="fw-semibold fs-2">{{ info.wind }} km/h</span>
           </div>
         </div>
       </div>
