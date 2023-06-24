@@ -1,5 +1,5 @@
 <script setup>
-const props = defineProps(['getData', 'updatesCity'])
+const props = defineProps(['getData', 'updatesCity', 'changesRequestedCity'])
 </script>
 
 <template>
@@ -9,10 +9,10 @@ const props = defineProps(['getData', 'updatesCity'])
         <label class="col-form-label" for="city-input">Sua cidade:</label>
       </div>
       <div class="col-md-2 ps-0">
-        <input @keyup="updatesCity" type="text" class="bg-trasparent form-control">
+        <input @keyup="updatesCity" type="text" id="city-input" spellcheck="false" class="bg-trasparent form-control">
       </div>
       <div class="col-md-1">
-        <button type="submit" class="btn btn-primary">Pesquisar</button>
+        <button @click="changesRequestedCity" type="submit" class="btn btn-primary">Pesquisar</button>
       </div>
     </div>
   </form>
