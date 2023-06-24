@@ -27,6 +27,8 @@ const info = reactive({
     }
   ],
   currentHumidity: 0,
+  currentTemperature: 0,
+  currentRealFeel: 0,
   iconUrl: '',
   isReadyToShowUp: false,
   requestDate: '',
@@ -38,6 +40,8 @@ function getCityData() {
   const curretWeatherUrl = `${curretWeatherBaseUrl}q=${info.city}&lang=pt&key=${apiKey}`;
   fetch(curretWeatherUrl).then(response => {
     response.json().then(jsonData => {
+      info.currentRealFeel = Math.round(jsonData.current.feelslike_c)
+      info.currentTemperature = Math.round(jsonData.current.temp_c)
       info.iconUrl = `${iconBaseUrl}${jsonData.current.condition.icon.slice(35, jsonData.current.condition.icon.length)}`
       const date = new Date();
 
@@ -62,7 +66,7 @@ function getCityData() {
 
       info.weatherDescription = jsonData.current.condition.text
       info.currentHumidity = jsonData.current.humidity
-      info.wind = jsonData.current.wind_kph
+      info.wind = Math.round(jsonData.current.wind_kph)
 
       const forecastUrl = `${forecastBaseUrl}q=${info.city}&lang=pt&days=3&key=${apiKey}`;
       fetch(forecastUrl).then(response => {
@@ -99,12 +103,12 @@ function drawGraph() {
   }
 
   for (let i = 0; i < 3; i++) {
-    addToIndex += 1
     if (indexOfDayToday + addToIndex === 7) {
       indexOfDayToday = 0;
       addToIndex = 0;
     }
     xValues.push(`${WeekDays[indexOfDayToday + addToIndex]}.`)
+    addToIndex += 1
   }
 
   let trace1 = {
@@ -159,7 +163,6 @@ function drawGraph() {
   let config = { staticPlot: true, responsive: true }
   Plotly.newPlot(graph, data, layout, config);
 }
-
 </script>
 
 <template>
@@ -177,13 +180,27 @@ function drawGraph() {
             <img :src="info.iconUrl" alt="">
           </div>
         </div>
+        <div class="row mt-1 mb-3">
+          <div class="col-md-12 text-center fw-semibold fs-4">
+            {{ info.weatherDescription }}
+          </div>
+        </div>
         <div class="row ps-4">
           <div class="col-md-6 text-center fw-semibold fs-2 pe-0">
             <span class="fw-semibold fs-5 label d-block">Humidade</span>{{ info.currentHumidity }}%
           </div>
           <div class="col-md-6 text-center ps-0">
             <span class="fw-semibold fs-5 label d-block text-start">Velocidade do vento</span>
-            <span class="fw-semibold fs-2 text-center pe-4">{{ info.wind }} km/h</span>
+            <span class="fw-semibold fs-2 text-center pe-5">{{ info.wind }} km/h</span>
+          </div>
+        </div>
+        <div class="row ps-4 mt-4">
+          <div class="col-md-6 text-center fw-semibold fs-2 pe-0">
+            <span class="fw-semibold fs-5 label d-block">Temperatura</span>{{ info.currentTemperature }}°C
+          </div>
+          <div class="col-md-6 text-center ps-0">
+            <span class="fw-semibold fs-5 label d-block text-start">Sensação térmica</span>
+            <span class="fw-semibold fs-2 text-center pe-5">{{ info.currentRealFeel }}°C</span>
           </div>
         </div>
       </div>
