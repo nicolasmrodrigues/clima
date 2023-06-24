@@ -12,7 +12,20 @@ const months = ['Jan', 'Fev', 'Mar', 'Abr', 'Maio', 'Jun', 'Jul', 'Ago', 'Set', 
 
 const info = reactive({
   city: '',
-  forecastAverageTemperature: [0, 0, 0],
+  forecastMaxAndMinTemperatures: [
+    {
+      max: 0,
+      min: 0
+    },
+    {
+      max: 0,
+      min: 0,
+    },
+    {
+      max: 0,
+      min: 0
+    }
+  ],
   humidity: 0,
   iconUrl: '',
   isReadyToShowUp: false,
@@ -25,7 +38,7 @@ function getCityData() {
   const curretWeatherUrl = `${curretWeatherBaseUrl}q=${info.city}&lang=pt&key=${apiKey}`;
   fetch(curretWeatherUrl).then(response => {
     response.json().then(jsonData => {
-      info.iconUrl = `${iconBaseUrl}${jsonData.current.condition.icon.slice(35, 46)}`
+      info.iconUrl = `${iconBaseUrl}${jsonData.current.condition.icon.slice(35, jsonData.current.condition.icon.length)}`
       const date = new Date();
 
       if (date.getHours() >= 13) {
@@ -58,7 +71,8 @@ function getCityData() {
           let forecast = [...forecastjsonData];
 
           for (let i = 0; i < forecast.length; i++) {
-            info.forecastAverageTemperature[i] = Math.round(forecast[i].day.avgtemp_c)
+            info.forecastMaxAndMinTemperatures[i].max = Math.round(forecast[i].day.maxtemp_c)
+            info.forecastMaxAndMinTemperatures[i].min = Math.round(forecast[i].day.mintemp_c)
           }
 
           drawGraph()
@@ -77,8 +91,12 @@ function drawGraph() {
   let indexOfDayToday = WeekDays.indexOf(dayToday)
 
   let xValues = []
-  console.log(info.forecastAverageTemperature)
-  let yValues = info.forecastAverageTemperature
+  let yMinValues = []
+  let yMaxValues = []
+
+  for (let i = 0; i < info.forecastMaxAndMinTemperatures.length; i++) {
+    yMaxValues.push(info.forecastMaxAndMinTemperatures[i].max)
+  }
 
   for (let i = 0; i < 3; i++) {
     addToIndex += 1
@@ -89,31 +107,56 @@ function drawGraph() {
     xValues.push(`${WeekDays[indexOfDayToday + addToIndex]}.`)
   }
 
-  let trace = {
+  let trace1 = {
     x: xValues,
-    y: yValues,
+    y: yMaxValues,
     type: 'bar',
-    text: yValues.map(String),
+    name: 'Máxima',
+    text: yMaxValues.map(String),
     textposition: 'auto',
     hoverinfo: 'none',
     marker: {
-      color: 'rgb(158,202,225)',
-      opacity: 0.6,
+      color: 'rgb(58,200,225)',
       line: {
         color: 'rgb(8,48,107)',
         width: 1.5
       }
     }
   };
-  let data = [trace];
-  let layout = {
-    title: 'Temperatura média nos proximos dias',
-    font: { size: 18 },
-    barmode: 'stack',
-    width: 700,
-    height: 410
+
+  for (let i = 0; i < info.forecastMaxAndMinTemperatures.length; i++) {
+    yMinValues.push(info.forecastMaxAndMinTemperatures[i].min)
+  }
+
+  let trace2 = {
+    x: xValues,
+    y: yMinValues,
+    type: 'bar',
+    name: 'Mínima',
+    text: yMinValues.map(String),
+    textposition: 'auto',
+    hoverinfo: 'none',
+    opacity: 1,
+    marker: {
+      color: 'rgb(158,202,225)',
+      line: {
+        color: 'rgb(8,48,107)',
+        width: 1.5
+      }
+    }
   };
-  var config = { staticPlot: true, responsive: true }
+
+  let data = [trace1, trace2];
+
+  let layout = {
+    title: 'Temperaturas mínimas e máximas',
+    font: { size: 18 },
+    barmode: 'group',
+    width: 700,
+    height: 410,
+  };
+
+  let config = { staticPlot: true, responsive: true }
   Plotly.newPlot(graph, data, layout, config);
 }
 
