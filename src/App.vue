@@ -26,7 +26,7 @@ const info = reactive({
       min: 0
     }
   ],
-  humidity: 0,
+  currentHumidity: 0,
   iconUrl: '',
   isReadyToShowUp: false,
   requestDate: '',
@@ -178,19 +178,12 @@ function drawGraph() {
           </div>
         </div>
         <div class="row ps-4">
-          <div class="col-md-6 text-center pe-0">
-            <span class="fw-semibold fs-5 label">Humidade</span>
+          <div class="col-md-6 text-center fw-semibold fs-2 pe-0">
+            <span class="fw-semibold fs-5 label d-block">Humidade</span>{{ info.currentHumidity }}%
           </div>
-          <div class="col-md-6 text-start ps-0">
-            <span class="fw-semibold fs-5 label">Velocidade do vento</span>
-          </div>
-        </div>
-        <div class="row ps-4">
-          <div class="col-md-6 text-center pe-0">
-            <span class="fw-semibold fs-2">{{ info.currentHumidity }}%</span>
-          </div>
-          <div class="col-md-6 text-center pe-5">
-            <span class="fw-semibold fs-2">{{ info.wind }} km/h</span>
+          <div class="col-md-6 text-center ps-0">
+            <span class="fw-semibold fs-5 label d-block text-start">Velocidade do vento</span>
+            <span class="fw-semibold fs-2 text-center pe-4">{{ info.wind }} km/h</span>
           </div>
         </div>
       </div>
