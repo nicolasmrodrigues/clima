@@ -207,7 +207,6 @@ window.addEventListener("load", function (event) {
       :changesRequestedCity="() => info.requestedCity = info.city.charAt(0).toUpperCase() + info.city.slice(1)"
       :get-data="getCityData" />
     <div class="forecast-container d-flex">
-      {{ info.isReadyToShowUp }}
       <div class="col-md-4 weather-card d-inline-block mt-4" v-if="info.isReadyToShowUp">
         <div class="row">
           <div class="col-md-12 text-center">
