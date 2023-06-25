@@ -1,6 +1,7 @@
 <script setup>
 import { reactive } from 'vue'
 import Formulario from './components/Formulario.vue'
+import Preloader from './components/Preloader.vue'
 
 const apiKey = 'c5730d43197b4199a5d174227232306'
 const curretWeatherBaseUrl = 'https://api.weatherapi.com/v1/current.json?'
@@ -173,6 +174,29 @@ function drawGraph() {
   let config = { staticPlot: true, responsive: true }
   Plotly.newPlot(graph, data, layout, config)
 }
+
+
+function location() {
+  fetch('https://api.ipify.org?format=json')
+    .then(x => x.json())
+    .then(({ ip }) => {
+      info.city = ip
+      let url = `${curretWeatherBaseUrl}q=${info.city}&lang=pt&key=${apiKey}`
+      let cityInput = document.getElementById('city-input')
+      fetch(url).then(response => {
+        response.json().then(jsonData => {
+          info.city = jsonData.location.name
+          info.requestedCity = info.city
+          cityInput.value = info.city
+        })
+      })
+      getCityData()
+    });
+}
+window.addEventListener("load", function (event) {
+  location()
+});
+
 </script>
 
 <template>
@@ -216,6 +240,9 @@ function drawGraph() {
             <span class="fw-semibold fs-2 text-center pe-5">{{ info.currentRealFeel }}°C</span>
           </div>
         </div>
+      </div>
+      <div v-else>
+        <Preloader />
       </div>
       <div v-show="info.isReadyToShowUp" class="col-md-7 mt-5 pt-4 ms-5">
         <div id="graph">
