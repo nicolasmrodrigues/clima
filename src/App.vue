@@ -63,7 +63,6 @@ function createsLocalDateString() {
   }
 
   info.localDateFormatted += `, ${localDateDay}, ${localDateDate} ${localDateMonth}, ${localDateYear}`
-  console.log(info.localDateFormatted)
 }
 
 function getWeatherInfo(data) {
