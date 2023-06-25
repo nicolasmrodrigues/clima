@@ -1,6 +1,5 @@
 <script setup>
 import { reactive } from 'vue'
-import Formulario from './components/Formulario.vue'
 import Preloader from './components/Preloader.vue'
 
 const apiKey = 'c5730d43197b4199a5d174227232306'
@@ -39,97 +38,103 @@ const info = reactive({
   windSpeed: 0
 })
 
-function getCityData() {
-  info.isReadyToShowUp = false
-  info.city = info.city.replace(' ', '%20')
-  info.city = info.city.replace('ç', 'c')
-  const curretWeatherUrl = `${curretWeatherBaseUrl}q=${info.city}&lang=pt&key=${apiKey}`
-  info.localDateFormatted = ''
-  fetch(curretWeatherUrl).then(response => {
-    response.json().then(jsonData => {
-      info.weatherDescription = jsonData.current.condition.text
-      info.localDate = jsonData.location.localtime
-      info.currentRealFeel = Math.round(jsonData.current.feelslike_c)
-      info.currentTemperature = Math.round(jsonData.current.temp_c)
-      info.windSpeed = Math.round(jsonData.current.wind_kph)
-      info.currentHumidity = jsonData.current.humidity
-      info.iconUrl = `${iconBaseUrl}${jsonData.current.condition.icon.slice(35, jsonData.current.condition.icon.length)}`
+function createsLocalDateString() {
+  let localDate = new Date(info.localDate)
+  let localDateYear = localDate.getFullYear()
+  let localDateMonth = months[localDate.getMonth()]
+  let localDateDate = localDate.getDate()
+  let localDateDay = DaysOfTheWeek[localDate.getDay()]
+  let localDateHours = localDate.getHours()
+  let localDateMinutes = localDate.getMinutes()
 
-      let localDate = new Date(info.localDate)
-      let localDateYear = localDate.getFullYear()
-      let localDateMonth = months[localDate.getMonth()]
-      let localDateDate = localDate.getDate()
-      let localDateDay = DaysOfTheWeek[localDate.getDay()]
-      let localDateHours = localDate.getHours()
-      let localDateMinutes = localDate.getMinutes()
+  if (localDateMinutes < 10) {
+    localDateMinutes = `0${localDateMinutes}`
+  }
 
-      if (localDateMinutes < 10) {
-        localDateMinutes = `0${localDateMinutes}`
-      }
+  if (localDateHours === 0) {
+    localDateHours = 12
+    info.localDateFormatted += `${localDateHours}:${localDateMinutes} AM`
+  } else if (localDateHours < 12) {
+    info.localDateFormatted += `${localDateHours}:${localDateMinutes} AM`
+  } else if (localDateHours === 12) {
+    info.localDateFormatted += `${localDateHours}:${localDateMinutes} PM`
+  } else if (localDateHours > 12) {
+    info.localDateFormatted += `${localDateHours - 12}:${localDateMinutes} PM`
+  }
 
-      if (localDateHours === 0) {
-        localDateHours = 12
-        info.localDateFormatted += `${localDateHours}:${localDateMinutes} AM`
-      } else if (localDateHours < 12) {
-        info.localDateFormatted += `${localDateHours}:${localDateMinutes} AM`
-      } else if (localDateHours === 12) {
-        info.localDateFormatted += `${localDateHours}:${localDateMinutes} PM`
-      } else if (localDateHours > 12) {
-        info.localDateFormatted += `${localDateHours - 12}:${localDateMinutes} PM`
-      }
-
-      info.localDateFormatted += `, ${localDateDay}, ${localDateDate} ${localDateMonth}, ${localDateYear}`
-    })
-  })
-
-  const forecastUrl = `${forecastBaseUrl}q=${info.city}&lang=pt&days=3&key=${apiKey}`
-
-  fetch(forecastUrl).then(response => {
-    response.json().then(jsonData => {
-      let forecastjsonData = jsonData.forecast.forecastday
-      let forecast = [...forecastjsonData]
-
-      for (let i = 0; i < forecast.length; i++) {
-        info.forecastMaxAndMinTemperatures[i].max = Math.round(forecast[i].day.maxtemp_c)
-        info.forecastMaxAndMinTemperatures[i].min = Math.round(forecast[i].day.mintemp_c)
-      }
-
-      drawGraph()
-      info.isReadyToShowUp = true
-    })
-  })
+  info.localDateFormatted += `, ${localDateDay}, ${localDateDate} ${localDateMonth}, ${localDateYear}`
+  console.log(info.localDateFormatted)
 }
 
-function drawGraph() {
-  const date = new Date(info.localDate)
-  let addToIndex = 0
-  const graph = document.getElementById('graph')
-  const dayToday = DaysOfTheWeek[date.getDay()]
-  let indexOfDayToday = DaysOfTheWeek.indexOf(dayToday)
+function getWeatherInfo(data) {
+  info.weatherDescription = data.current.condition.text
+  info.localDate = data.location.localtime
+  info.currentRealFeel = Math.round(data.current.feelslike_c)
+  info.currentTemperature = Math.round(data.current.temp_c)
+  info.windSpeed = Math.round(data.current.wind_kph)
+  info.currentHumidity = data.current.humidity
+  info.iconUrl = `${iconBaseUrl}${data.current.condition.icon.slice(35, data.current.condition.icon.length)}`
+}
 
-  let xValues = []
-  let yMinValues = []
-  let yMaxValues = []
+function createsUrls() {
+  info.city = info.city.replace(' ', '%20')
+  info.city = info.city.replace('ç', 'c')
+  return [`${curretWeatherBaseUrl}q=${info.city}&lang=pt&key=${apiKey}`, `${forecastBaseUrl}q=${info.city}&lang=pt&days=3&key=${apiKey}`]
+}
+
+function getForecastInfo(data) {
+  let forecast = [...data.forecast.forecastday]
+
+  for (let i = 0; i < forecast.length; i++) {
+    info.forecastMaxAndMinTemperatures[i].max = Math.round(forecast[i].day.maxtemp_c)
+    info.forecastMaxAndMinTemperatures[i].min = Math.round(forecast[i].day.mintemp_c)
+  }
+}
+
+function getMaxAndMinTemperatures() {
+  let maxTemperatures = []
+  let minTemperatures = []
 
   for (let i = 0; i < info.forecastMaxAndMinTemperatures.length; i++) {
-    yMaxValues.push(info.forecastMaxAndMinTemperatures[i].max)
+    maxTemperatures.push(info.forecastMaxAndMinTemperatures[i].max)
+    minTemperatures.push(info.forecastMaxAndMinTemperatures[i].min)
   }
+  return [maxTemperatures, minTemperatures]
+}
+
+function getNextDaysOfTheWeek() {
+  const date = new Date(info.localDate)
+  let addToIndex = 0
+  const dayToday = DaysOfTheWeek[date.getDay()]
+  let indexOfDayToday = DaysOfTheWeek.indexOf(dayToday)
+  let nextDays = []
 
   for (let i = 0; i < 3; i++) {
     if (indexOfDayToday + addToIndex === 7) {
       indexOfDayToday = 0
       addToIndex = 0
     }
-    xValues.push(`${DaysOfTheWeek[indexOfDayToday + addToIndex]}.`)
+    nextDays.push(`${DaysOfTheWeek[indexOfDayToday + addToIndex]}.`)
     addToIndex += 1
   }
 
-  let trace1 = {
+  return nextDays
+}
+
+function drawGraph() {
+  const maxAndMinTemperatures = getMaxAndMinTemperatures()
+  const graph = document.getElementById('graph')
+
+  const xValues = getNextDaysOfTheWeek()
+  const yMaxTemperatures = maxAndMinTemperatures[0]
+  const yMinTemperatures = maxAndMinTemperatures[1]
+
+  let maxTemperaturesTrace = {
     x: xValues,
-    y: yMaxValues,
+    y: yMaxTemperatures,
     type: 'bar',
     name: 'Máxima',
-    text: [`${yMaxValues[0]}°C`, `${yMaxValues[1]}°C`, `${yMaxValues[2]}°C`],
+    text: [`${yMaxTemperatures[0]}°C`, `${yMaxTemperatures[1]}°C`, `${yMaxTemperatures[2]}°C`],
     textposition: 'auto',
     hoverinfo: 'none',
     marker: {
@@ -141,16 +146,12 @@ function drawGraph() {
     }
   }
 
-  for (let i = 0; i < info.forecastMaxAndMinTemperatures.length; i++) {
-    yMinValues.push(info.forecastMaxAndMinTemperatures[i].min)
-  }
-
-  let trace2 = {
+  let minTemperaturesTrace = {
     x: xValues,
-    y: yMinValues,
+    y: yMinTemperatures,
     type: 'bar',
     name: 'Mínima',
-    text: [`${yMinValues[0]}°C`, `${yMinValues[1]}°C`, `${yMinValues[2]}°C`],
+    text: [`${yMinTemperatures[0]}°C`, `${yMinTemperatures[1]}°C`, `${yMinTemperatures[2]}°C`],
     textposition: 'auto',
     hoverinfo: 'none',
     opacity: 1,
@@ -163,7 +164,7 @@ function drawGraph() {
     }
   }
 
-  let data = [trace1, trace2]
+  let data = [maxTemperaturesTrace, minTemperaturesTrace]
 
   let layout = {
     title: 'Temperatura máximas e mínimas',
@@ -177,8 +178,37 @@ function drawGraph() {
   Plotly.newPlot(graph, data, layout, config)
 }
 
+function GetWeatherAndForecast() {
+  info.isReadyToShowUp = false
+  info.localDateFormatted = ''
 
-function location() {
+  const urls = createsUrls()
+
+  const curretWeatherUrl = urls[0]
+  const forecastUrl = urls[1]
+
+  fetch(curretWeatherUrl).then(response => {
+    response.json().then(jsonData => {
+      getWeatherInfo(jsonData)
+      createsLocalDateString()
+    })
+  })
+
+
+
+  fetch(forecastUrl).then(response => {
+    response.json().then(jsonData => {
+      getForecastInfo(jsonData)
+
+      drawGraph()
+
+      info.isReadyToShowUp = true
+    })
+  })
+}
+
+
+function getCurrentLocationInfo() {
   fetch('https://api.ipify.org?format=json')
     .then(x => x.json())
     .then(({ ip }) => {
@@ -192,20 +222,30 @@ function location() {
           cityInput.value = info.city
         })
       })
-      getCityData()
+      GetWeatherAndForecast()
     });
 }
+
 window.addEventListener("load", function (event) {
-  location()
+  getCurrentLocationInfo()
 });
 
 </script>
 
 <template>
   <div class="container mt-5 ps-4 rounded-3">
-    <Formulario :updates-city="event => info.city = event.target.value"
-      :changesRequestedCity="() => info.requestedCity = info.city.charAt(0).toUpperCase() + info.city.slice(1)"
-      :get-data="getCityData" />
+    <form @submit.prevent="GetWeatherAndForecast">
+      <div class="row pt-5 pb-3">
+        <div class="col-md-2">
+          <input @keyup="event => info.city = event.target.value" type="text" id="city-input" spellcheck="false"
+            class="bg-trasparent form-control">
+        </div>
+        <div class="col-md-1">
+          <button @click="() => info.requestedCity = info.city.charAt(0).toUpperCase() + info.city.slice(1)" type="submit"
+            class="btn btn-primary"><i class="bi bi-search"></i></button>
+        </div>
+      </div>
+    </form>
     <div class="forecast-container d-flex">
       <div class="col-md-4 weather-card d-inline-block mt-4" v-if="info.isReadyToShowUp">
         <div class="row">
@@ -221,7 +261,6 @@ window.addEventListener("load", function (event) {
         </div>
         <div class="row mt-1 mb-3">
           <div class="col-md-12 text-center fw-semibold fs-4">
-            {{ info.weatherDescription }}
           </div>
         </div>
         <div class="row ps-4">
@@ -263,5 +302,9 @@ window.addEventListener("load", function (event) {
 
 .label {
   color: #757575;
+}
+
+.bg-trasparent {
+  background-color: transparent;
 }
 </style>
