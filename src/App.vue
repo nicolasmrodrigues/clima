@@ -2,8 +2,10 @@
 import { reactive } from 'vue'
 import Preloader from './components/Preloader.vue'
 
-const apiKey = 'c5730d43197b4199a5d174227232306'
-const curretWeatherBaseUrl = 'https://api.weatherapi.com/v1/current.json?'
+const weatherapiKey = 'c5730d43197b4199a5d174227232306'
+const ipKey = 'f2798494335c49ebb6cf5808f85c4a8f'
+const ipBaseUrl = 'https://ipgeolocation.abstractapi.com/v1/?'
+const currentWeatherBaseUrl = 'https://api.weatherapi.com/v1/current.json?'
 const forecastBaseUrl = 'https://api.weatherapi.com/v1/forecast.json?'
 const iconBaseUrl = 'https://cdn.weatherapi.com/weather/128x128/'
 
@@ -78,7 +80,7 @@ function getWeatherInfo(data) {
 function createsUrls() {
   info.city = info.city.replace(' ', '%20')
   info.city = info.city.replace('ç', 'c')
-  return [`${curretWeatherBaseUrl}q=${info.city}&lang=pt&key=${apiKey}`, `${forecastBaseUrl}q=${info.city}&lang=pt&days=3&key=${apiKey}`]
+  return [`${currentWeatherBaseUrl}q=${info.city}&lang=pt&key=${weatherapiKey}`, `${forecastBaseUrl}q=${info.city}&lang=pt&days=3&key=${weatherapiKey}`]
 }
 
 function getForecastInfo(data) {
@@ -183,49 +185,43 @@ function GetWeatherAndForecast() {
 
   const urls = createsUrls()
 
-  const curretWeatherUrl = urls[0]
+  const currentWeatherUrl = urls[0]
   const forecastUrl = urls[1]
 
-  fetch(curretWeatherUrl).then(response => {
+  fetch(currentWeatherUrl).then(response => {
     response.json().then(jsonData => {
       getWeatherInfo(jsonData)
       createsLocalDateString()
     })
-  })
+  }).then(() => {
+    fetch(forecastUrl).then(response => {
+      response.json().then(jsonData => {
+        getForecastInfo(jsonData)
 
+        drawGraph()
 
-
-  fetch(forecastUrl).then(response => {
-    response.json().then(jsonData => {
-      getForecastInfo(jsonData)
-
-      drawGraph()
-
-      info.isReadyToShowUp = true
+        info.isReadyToShowUp = true
+      })
     })
   })
 }
 
 
 function getCurrentLocationInfo() {
-  fetch('https://api.ipify.org?format=json')
-    .then(x => x.json())
-    .then(({ ip }) => {
-      info.city = ip
-      let url = `${curretWeatherBaseUrl}q=${info.city}&lang=pt&key=${apiKey}`
+  const ipUrl = `${ipBaseUrl}api_key=${ipKey}`
+
+  fetch(ipUrl).then(response => {
+    response.json().then(jsonData => {
+      info.city = jsonData.ip_address
       let cityInput = document.getElementById('city-input')
-      fetch(url).then(response => {
-        response.json().then(jsonData => {
-          info.city = jsonData.location.name
-          info.requestedCity = info.city
-          cityInput.value = info.city
-        })
-      })
+      info.city = info.requestedCity = jsonData.city
       GetWeatherAndForecast()
-    });
+      cityInput.value = jsonData.city
+    })
+  })
 }
 
-window.addEventListener("load", function (event) {
+window.addEventListener("load", () => {
   getCurrentLocationInfo()
 });
 
