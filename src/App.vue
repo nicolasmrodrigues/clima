@@ -5,10 +5,6 @@ import Form from './components/Form.vue'
 import WeatherCard from './components/WeatherCard.vue';
 import Graph from './components/Graph.vue';
 
-const weatherapiKey = 'c5730d43197b4199a5d174227232306'
-const ipKey = 'f2798494335c49ebb6cf5808f85c4a8f'
-const ipBaseUrl = 'https://ipgeolocation.abstractapi.com/v1/?'
-const forecastBaseUrl = 'https://api.weatherapi.com/v1/forecast.json?'
 const iconBaseUrl = 'https://cdn.weatherapi.com/weather/128x128/'
 
 const DaysOfTheWeek = ['Dom', 'Seg', 'Terç', 'Qua', 'Qui', 'Sex', 'Sáb']
@@ -79,11 +75,6 @@ function getWeatherInfo(data) {
   info.iconUrl = `${iconBaseUrl}${data.current.condition.icon.slice(35, data.current.condition.icon.length)}`
 }
 
-function createsUrls() {
-  info.city = info.city.replace(' ', '%20')
-  info.city = info.city.replace('ç', 'c')
-  return [`${forecastBaseUrl}q=${info.city}&lang=pt&key=${weatherapiKey}`, `${forecastBaseUrl}q=${info.city}&lang=pt&days=3&key=${weatherapiKey}`]
-}
 
 function getForecastInfo(data) {
   let forecast = [...data.forecast.forecastday]
@@ -185,12 +176,10 @@ function GetWeatherAndForecast() {
   info.isReadyToShowUp = false
   info.localDateFormatted = ''
 
-  const urls = createsUrls()
+  let CurrentWeatherUrl = `https://clima-backend.vercel.app/weather?city=${info.city}&days=1`
+  let forecastUrl = `https://clima-backend.vercel.app/weather?city=${info.city}&days=3`
 
-  const currentWeatherUrl = urls[0]
-  const forecastUrl = urls[1]
-
-  fetch(currentWeatherUrl).then(response => {
+  fetch(CurrentWeatherUrl).then(response => {
     response.json().then(jsonData => {
       getWeatherInfo(jsonData)
       createsLocalDateString()
@@ -206,20 +195,22 @@ function GetWeatherAndForecast() {
       })
     })
   })
+
 }
 
 
 function getCurrentLocationInfo() {
-  const ipUrl = `${ipBaseUrl}api_key=${ipKey}`
+  const geolocationUrl = 'https://clima-backend.vercel.app/ip'
+  let cityInput = document.getElementById('city-input')
 
-  fetch(ipUrl).then(response => {
+  fetch(geolocationUrl).then(response => {
     response.json().then(jsonData => {
       info.city = info.requestedCity = jsonData.city
-      let cityInput = document.getElementById('city-input')
       GetWeatherAndForecast()
       cityInput.value = jsonData.city
     })
   })
+
 }
 
 window.addEventListener("load", () => {
