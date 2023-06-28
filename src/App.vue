@@ -228,7 +228,7 @@ function updatesRequestedCity() {
 </script>
 
 <template>
-  <div class="dashboard-container container mt-5 p-4 rounded-3">
+  <div class="dashboard-container container mt-5 p-4 pt-5 rounded-3">
     <Form :submit="GetWeatherAndForecast" :input-change="changesCity" :button-click="updatesRequestedCity" />
     <div class="preloader-container" v-show="!info.isReadyToShowUp">
       <Preloader />
