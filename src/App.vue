@@ -1,11 +1,13 @@
 <script setup>
 import { reactive } from 'vue'
 import Preloader from './components/Preloader.vue'
+import Form from './components/Form.vue'
+import WeatherCard from './components/WeatherCard.vue';
+import Graph from './components/Graph.vue';
 
 const weatherapiKey = 'c5730d43197b4199a5d174227232306'
 const ipKey = 'f2798494335c49ebb6cf5808f85c4a8f'
 const ipBaseUrl = 'https://ipgeolocation.abstractapi.com/v1/?'
-const currentWeatherBaseUrl = 'https://api.weatherapi.com/v1/current.json?'
 const forecastBaseUrl = 'https://api.weatherapi.com/v1/forecast.json?'
 const iconBaseUrl = 'https://cdn.weatherapi.com/weather/128x128/'
 
@@ -80,7 +82,7 @@ function getWeatherInfo(data) {
 function createsUrls() {
   info.city = info.city.replace(' ', '%20')
   info.city = info.city.replace('ç', 'c')
-  return [`${currentWeatherBaseUrl}q=${info.city}&lang=pt&key=${weatherapiKey}`, `${forecastBaseUrl}q=${info.city}&lang=pt&days=3&key=${weatherapiKey}`]
+  return [`${forecastBaseUrl}q=${info.city}&lang=pt&key=${weatherapiKey}`, `${forecastBaseUrl}q=${info.city}&lang=pt&days=3&key=${weatherapiKey}`]
 }
 
 function getForecastInfo(data) {
@@ -212,9 +214,8 @@ function getCurrentLocationInfo() {
 
   fetch(ipUrl).then(response => {
     response.json().then(jsonData => {
-      info.city = jsonData.ip_address
-      let cityInput = document.getElementById('city-input')
       info.city = info.requestedCity = jsonData.city
+      let cityInput = document.getElementById('city-input')
       GetWeatherAndForecast()
       cityInput.value = jsonData.city
     })
@@ -225,81 +226,43 @@ window.addEventListener("load", () => {
   getCurrentLocationInfo()
 });
 
+function changesCity(event) {
+  info.city = event.target.value.charAt(0).toUpperCase() + event.target.value.slice(1)
+}
+
+function updatesRequestedCity() {
+  info.requestedCity = info.city
+}
+
 </script>
 
 <template>
-  <div class="container mt-5 ps-4 rounded-3">
-    <form @submit.prevent="GetWeatherAndForecast">
-      <div class="row pt-5 pb-3">
-        <div class="col-md-2">
-          <input @keyup="event => info.city = event.target.value" type="text" id="city-input" spellcheck="false"
-            class="bg-trasparent form-control">
-        </div>
-        <div class="col-md-1">
-          <button @click="() => info.requestedCity = info.city.charAt(0).toUpperCase() + info.city.slice(1)" type="submit"
-            class="btn btn-primary"><i class="bi bi-search"></i></button>
-        </div>
-      </div>
-    </form>
-    <div class="forecast-container d-flex">
-      <div class="col-md-4 weather-card d-inline-block mt-4" v-if="info.isReadyToShowUp">
-        <div class="row">
-          <div class="col-md-12 text-center">
-            <span class="d-block" v-if="info.localDateFormatted">Horário de {{ info.requestedCity }}: </span>
-            <span v-if="info.localDateFormatted">{{ info.localDateFormatted }}</span>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-12 text-center">
-            <img :src="info.iconUrl" alt="">
-          </div>
-        </div>
-        <div class="row mt-1 mb-3">
-          <div class="col-md-12 text-center fw-semibold fs-4">
-          </div>
-        </div>
-        <div class="row ps-4">
-          <div class="col-md-6 text-center fw-semibold fs-2 pe-0">
-            <span class="fw-semibold fs-5 label d-block">Humidade</span>{{ info.currentHumidity }}%
-          </div>
-          <div class="col-md-6 text-center ps-0">
-            <span class="fw-semibold fs-5 label d-block text-start">Velocidade do vento</span>
-            <span class="fw-semibold fs-2 text-center pe-5">{{ info.windSpeed }} km/h</span>
-          </div>
-        </div>
-        <div class="row ps-4 mt-4">
-          <div class="col-md-6 text-center fw-semibold fs-2 pe-0">
-            <span class="fw-semibold fs-5 label d-block">Temperatura</span>{{ info.currentTemperature }}°C
-          </div>
-          <div class="col-md-6 text-center ps-0">
-            <span class="fw-semibold fs-5 label d-block text-start">Sensação térmica</span>
-            <span class="fw-semibold fs-2 text-center pe-5">{{ info.currentRealFeel }}°C</span>
-          </div>
-        </div>
-      </div>
-      <div v-else>
-        <Preloader />
-      </div>
-      <div v-show="info.isReadyToShowUp" class="col-md-7 mt-5 pt-4 ms-5">
-        <div id="graph">
-        </div>
-      </div>
+  <div class="dashboard-container container mt-5 p-4 rounded-3">
+    <Form :submit="GetWeatherAndForecast" :input-change="changesCity" :button-click="updatesRequestedCity" />
+    <div class="preloader-container" v-show="!info.isReadyToShowUp">
+      <Preloader />
+    </div>
+    <div class="forecast-container" v-show="info.isReadyToShowUp">
+      <WeatherCard :info="info" />
+      <Graph />
     </div>
   </div>
 </template>
 
 <style scoped lang="scss">
-.container {
+.dashboard-container {
   background-color: #fff;
   height: 80vh;
   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
 }
 
-.label {
-  color: #757575;
+.forecast-container {
+  display: flex;
 }
 
-.bg-trasparent {
-  background-color: transparent;
+.preloader-container {
+  width: 100%;
+  margin-top: 10%;
+
 }
 </style>

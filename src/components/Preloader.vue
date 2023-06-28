@@ -42,8 +42,6 @@ export default {
   height: 125px;
   margin: auto;
   transform: scale(var(--scale));
-  margin-left: 440%;
-  margin-top: 100%;
 }
 
 .preloader>span {
