@@ -206,7 +206,6 @@ function getCurrentLocationInfo() {
   fetch(geolocationUrl).then(response => {
     response.json().then(jsonData => {
       info.city = info.requestedCity = jsonData.location.name
-      console.log(info)
       GetWeatherAndForecast()
       cityInput.value = jsonData.location.name
     })
