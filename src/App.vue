@@ -200,7 +200,7 @@ function GetWeatherAndForecast() {
 
 
 function getCurrentLocationInfo() {
-  const geolocationUrl = 'https://clima-backend.vercel.app/weather?city='
+  const geolocationUrl = 'https://clima-backend.vercel.app/weather'
   let cityInput = document.getElementById('city-input')
 
   fetch(geolocationUrl).then(response => {
