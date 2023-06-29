@@ -1,5 +1,5 @@
 <script setup>
-import { reactive } from 'vue'
+import { onMounted, reactive } from 'vue'
 import Preloader from './components/Preloader.vue'
 import Form from './components/Form.vue'
 import WeatherCard from './components/WeatherCard.vue';
@@ -35,7 +35,8 @@ const info = reactive({
   localDate: '',
   localDateFormatted: '',
   weatherDescription: '',
-  windSpeed: 0
+  windSpeed: 0,
+  autocomplete: [],
 })
 
 function createsLocalDateString() {
@@ -181,6 +182,7 @@ function GetWeatherAndForecast() {
 
   fetch(CurrentWeatherUrl).then(response => {
     response.json().then(jsonData => {
+      console.log(jsonData)
       getWeatherInfo(jsonData)
       createsLocalDateString()
     })
@@ -192,6 +194,7 @@ function GetWeatherAndForecast() {
         drawGraph()
 
         info.isReadyToShowUp = true
+        info.autocomplete = []
       })
     })
   })
@@ -217,8 +220,56 @@ window.addEventListener("load", () => {
   getCurrentLocationInfo()
 });
 
+onMounted(() => {
+  const cityInput = document.getElementById('city-input')
+  const city1 = document.getElementById('city1')
+  const city2 = document.getElementById('city2')
+  const city3 = document.getElementById('city3')
+
+  city1.addEventListener('click', function (e) {
+    info.autocomplete = []
+    info.city = e.target.value.slice(0, e.target.value.indexOf(','))
+    cityInput.value = e.target.value.slice(0, e.target.value.indexOf(','))
+    updatesRequestedCity()
+  })
+
+  city2.addEventListener('click', function (e) {
+    info.autocomplete = []
+    info.city = e.target.value.slice(0, e.target.value.indexOf(','))
+    cityInput.value = e.target.value.slice(0, e.target.value.indexOf(','))
+    updatesRequestedCity()
+  })
+
+  city3.addEventListener('click', function (e) {
+    info.autocomplete = []
+    info.city = e.target.value.slice(0, e.target.value.indexOf(','))
+    cityInput.value = e.target.value.slice(0, e.target.value.indexOf(','))
+    updatesRequestedCity()
+  })
+
+
+})
+
 function changesCity(event) {
   info.city = event.target.value.charAt(0).toUpperCase() + event.target.value.slice(1)
+  info.city = info.city.replace('ç', 'c')
+  info.city = info.city.replace(' ', '%20')
+  const cityInput = document.getElementById('city-input')
+
+  if (cityInput.value === '' || cityInput.value === ' ') {
+    return
+  }
+
+  const url = `https://clima-backend.vercel.app/search?city=${info.city}&days=1`
+
+  fetch(url).then(response => {
+    response.json().then(jsonData => {
+      info.autocomplete = []
+      for (let i = 0; i < jsonData.length; i++) {
+        info.autocomplete.push(`${jsonData[i].name}, ${jsonData[i].country}`)
+      }
+    })
+  })
 }
 
 function updatesRequestedCity() {
@@ -229,7 +280,8 @@ function updatesRequestedCity() {
 
 <template>
   <div class="dashboard-container container mt-5 p-4 pt-5 rounded-3">
-    <Form :submit="GetWeatherAndForecast" :input-change="changesCity" :button-click="updatesRequestedCity" />
+    <Form :submit="GetWeatherAndForecast" :input-change="changesCity" :button-click="updatesRequestedCity"
+      :city1="info.autocomplete[0]" :city2="info.autocomplete[1]" :city3="info.autocomplete[2]"></Form>
     <div class="preloader-container" v-show="!info.isReadyToShowUp">
       <Preloader />
     </div>
