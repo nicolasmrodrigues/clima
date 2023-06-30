@@ -30,21 +30,27 @@ const props = defineProps(['submit', 'inputChange', 'buttonClick', 'cities'])
         </button>
       </div>
     </div>
-
   </form>
 </template>
 
 <style scoped lang="scss">
 .last {
-  button {
+  .autocomplete-col {
     border-bottom-left-radius: 4px;
     border-bottom-right-radius: 4px;
+    border: none;
   }
+}
+
+.selected {
+  background-color: rgb(235, 235, 235) !important;
 }
 
 .autocomplete {
   height: 120px;
   position: absolute;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
 
   &,
   &-row {
@@ -53,7 +59,7 @@ const props = defineProps(['submit', 'inputChange', 'buttonClick', 'cities'])
   }
 
   &-row:first-child {
-    button {
+    .autocomplete-col {
       border-top-left-radius: 4px;
       border-top-right-radius: 4px;
     }
@@ -67,6 +73,7 @@ const props = defineProps(['submit', 'inputChange', 'buttonClick', 'cities'])
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    border-bottom: 2px solid #e3e3e3;
 
     &:hover {
       background-color: rgb(235, 235, 235);
