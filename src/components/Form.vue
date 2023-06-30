@@ -1,5 +1,5 @@
 <script setup>
-const props = defineProps(['submit', 'inputChange', 'buttonClick', 'city1', 'city2', 'city3'])
+const props = defineProps(['submit', 'inputChange', 'buttonClick', 'cities'])
 </script>
 
 <template>
@@ -14,19 +14,19 @@ const props = defineProps(['submit', 'inputChange', 'buttonClick', 'city1', 'cit
       </div>
     </div>
     <div class="autocomplete">
-      <div v-show="city1" class="row autocomplete-row ms-3 mt-2" :class="{ last: !city2 }">
-        <button class="col-md-12 autocomplete-col pe-1 text-start" id="city1" :value="city1">
-          {{ city1 }}
+      <div v-show="cities[0]" class="row autocomplete-row ms-3 mt-2" :class="{ last: !cities[1] }">
+        <button class="col-md-12 autocomplete-col pe-1 text-start" id="city1" :value="cities[0]">
+          {{ cities[0] }}
         </button>
       </div>
-      <div v-show="city2" class="row autocomplete-row ms-3" :class="{ last: !city3 }">
-        <button class="col-md-12 autocomplete-col pe-1 text-start" id="city2" :value="city2">
-          {{ city2 }}
+      <div v-show="cities[1]" class="row autocomplete-row ms-3" :class="{ last: !cities[2] }">
+        <button class="col-md-12 autocomplete-col pe-1 text-start" id="city2" :value="cities[1]">
+          {{ cities[1] }}
         </button>
       </div>
-      <div v-show="city3" class="row autocomplete-row ms-3" :class="{ last: city3 }">
-        <button class="col-md-12 autocomplete-col pe-1 text-start" id="city3" :value="city3">
-          {{ city3 }}
+      <div v-show="cities[2]" class="row autocomplete-row ms-3" :class="{ last: cities[2] }">
+        <button class="col-md-12 autocomplete-col pe-1 text-start" id="city3" :value="cities[2]">
+          {{ cities[2] }}
         </button>
       </div>
     </div>

@@ -177,33 +177,22 @@ function GetWeatherAndForecast() {
   info.isReadyToShowUp = false
   info.localDateFormatted = ''
 
-  let CurrentWeatherUrl = `https://clima-backend.vercel.app/weather?city=${info.city}&days=1`
-  let forecastUrl = `https://clima-backend.vercel.app/weather?city=${info.city}&days=3`
+  let weatherAndForecastUrl = `http://localhost:3000/weather?city=${info.city}&days=3`
 
-  fetch(CurrentWeatherUrl).then(response => {
+  fetch(weatherAndForecastUrl).then(response => {
     response.json().then(jsonData => {
-      console.log(jsonData)
       getWeatherInfo(jsonData)
+      getForecastInfo(jsonData)
       createsLocalDateString()
-    })
-  }).then(() => {
-    fetch(forecastUrl).then(response => {
-      response.json().then(jsonData => {
-        getForecastInfo(jsonData)
-
-        drawGraph()
-
-        info.isReadyToShowUp = true
-        info.autocomplete = []
-      })
+      drawGraph()
+      info.isReadyToShowUp = true
     })
   })
-
 }
 
 
 function getCurrentLocationInfo() {
-  const geolocationUrl = 'https://clima-backend.vercel.app/weather'
+  const geolocationUrl = 'http://localhost:3000/weather'
   let cityInput = document.getElementById('city-input')
 
   fetch(geolocationUrl).then(response => {
@@ -260,7 +249,7 @@ function changesCity(event) {
     return
   }
 
-  const url = `https://clima-backend.vercel.app/search?city=${info.city}&days=1`
+  const url = `http://localhost:3000/search?city=${info.city}&days=1`
 
   fetch(url).then(response => {
     response.json().then(jsonData => {
@@ -281,7 +270,7 @@ function updatesRequestedCity() {
 <template>
   <div class="dashboard-container container mt-5 p-4 pt-5 rounded-3">
     <Form :submit="GetWeatherAndForecast" :input-change="changesCity" :button-click="updatesRequestedCity"
-      :city1="info.autocomplete[0]" :city2="info.autocomplete[1]" :city3="info.autocomplete[2]"></Form>
+      :cities="info.autocomplete"></Form>
     <div class="preloader-container" v-show="!info.isReadyToShowUp">
       <Preloader />
     </div>
