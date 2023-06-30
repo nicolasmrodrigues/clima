@@ -279,9 +279,15 @@ function updatesRequestedCity() {
       <Graph />
     </div>
   </div>
+  <footer class="footer">
+    <a class="footer-link" style="display: inline-block; margin: 40px auto 0 auto;"
+      href="https://www.flaticon.com/free-icons/weather" title="weather icons">Weather
+      icons created by iconixar -
+      Flaticon</a>
+  </footer>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss">
 .dashboard-container {
   background-color: #fff;
   height: 80vh;
@@ -296,5 +302,18 @@ function updatesRequestedCity() {
   width: 100%;
   margin-top: 10%;
 
+}
+
+#app {
+  height: 93dvh;
+}
+
+.footer {
+  text-align: center;
+
+  &-link {
+    display: inline-block;
+    margin-top: 40px;
+  }
 }
 </style>
