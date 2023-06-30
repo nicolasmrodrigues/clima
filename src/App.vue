@@ -1,9 +1,10 @@
 <script setup>
 import { onMounted, reactive } from 'vue'
 import Preloader from './components/Preloader.vue'
-import Form from './components/Form.vue'
+import Form from './components/Form.vue';
 import WeatherCard from './components/WeatherCard.vue';
 import Graph from './components/Graph.vue';
+import Footer from './components/Footer.vue'
 
 const iconBaseUrl = 'https://cdn.weatherapi.com/weather/128x128/'
 
@@ -279,12 +280,8 @@ function updatesRequestedCity() {
       <Graph />
     </div>
   </div>
-  <footer class="footer">
-    <a class="footer-link" style="display: inline-block; margin: 40px auto 0 auto;"
-      href="https://www.flaticon.com/free-icons/weather" title="weather icons">Weather
-      icons created by iconixar -
-      Flaticon</a>
-  </footer>
+  <Footer>
+  </Footer>
 </template>
 
 <style lang="scss">
@@ -306,14 +303,5 @@ function updatesRequestedCity() {
 
 #app {
   height: 93dvh;
-}
-
-.footer {
-  text-align: center;
-
-  &-link {
-    display: inline-block;
-    margin-top: 40px;
-  }
 }
 </style>
