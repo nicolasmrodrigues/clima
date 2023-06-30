@@ -177,7 +177,7 @@ function GetWeatherAndForecast() {
   info.isReadyToShowUp = false
   info.localDateFormatted = ''
 
-  let weatherAndForecastUrl = `http://localhost:3000/weather?city=${info.city}&days=3`
+  let weatherAndForecastUrl = `https://clima-backend.vercel.app/weather?city=${info.city}&days=3`
 
   fetch(weatherAndForecastUrl).then(response => {
     response.json().then(jsonData => {
@@ -192,7 +192,7 @@ function GetWeatherAndForecast() {
 
 
 function getCurrentLocationInfo() {
-  const geolocationUrl = 'http://localhost:3000/weather'
+  const geolocationUrl = 'https://clima-backend.vercel.app/weather'
   let cityInput = document.getElementById('city-input')
 
   fetch(geolocationUrl).then(response => {
@@ -249,7 +249,7 @@ function changesCity(event) {
     return
   }
 
-  const url = `http://localhost:3000/search?city=${info.city}&days=1`
+  const url = `https://clima-backend.vercel.app/search?city=${info.city}&days=1`
 
   fetch(url).then(response => {
     response.json().then(jsonData => {
