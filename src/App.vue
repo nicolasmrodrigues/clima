@@ -244,11 +244,6 @@ function changesCity(event) {
   info.city = event.target.value.charAt(0).toUpperCase() + event.target.value.slice(1)
   info.city = info.city.replace('ç', 'c')
   info.city = info.city.replace(' ', '%20')
-  const cityInput = document.getElementById('city-input')
-
-  if (cityInput.value === '' || cityInput.value === ' ') {
-    return
-  }
 
   const url = `https://clima-backend.vercel.app/search?city=${info.city}&days=1`
 
