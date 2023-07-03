@@ -1,10 +1,13 @@
 <script setup>
 import { onMounted, reactive } from 'vue'
-import Preloader from './components/Preloader.vue'
+import Preloader from './components/Preloader.vue';
 import Form from './components/Form.vue';
 import WeatherCard from './components/WeatherCard.vue';
 import Graph from './components/Graph.vue';
-import Footer from './components/Footer.vue'
+import Footer from './components/Footer.vue';
+import Chart from 'chart.js/auto'
+import ChartDataLabels from 'chartjs-plugin-datalabels'
+import { f } from 'plotly.js-dist';
 
 const iconBaseUrl = 'https://cdn.weatherapi.com/weather/128x128/'
 
@@ -118,60 +121,69 @@ function getNextDaysOfTheWeek() {
 }
 
 function drawGraph() {
+
+  const canvasContainer = document.getElementById('canvas-container')
+  canvasContainer.removeChild(canvasContainer.children[0])
+
+  const canvas = document.createElement('canvas')
+  canvas.id = 'canvas'
+  canvasContainer.appendChild(canvas)
+
+  const graph = document.getElementById('canvas')
+
   const maxAndMinTemperatures = getMaxAndMinTemperatures()
-  const graph = document.getElementById('graph')
 
   const xValues = getNextDaysOfTheWeek()
   const yMaxTemperatures = maxAndMinTemperatures[0]
   const yMinTemperatures = maxAndMinTemperatures[1]
 
-  let maxTemperaturesTrace = {
-    x: xValues,
-    y: yMaxTemperatures,
+  Chart.register(ChartDataLabels);
+  Chart.defaults.set('plugins.datalabels', {
+    color: '#000',
+    anchor: 'end',
+    align: 'bottom'
+  });
+  Chart.defaults.font.size = 16;
+
+  new Chart(graph, {
     type: 'bar',
-    name: 'Máxima',
-    text: [`${yMaxTemperatures[0]}°C`, `${yMaxTemperatures[1]}°C`, `${yMaxTemperatures[2]}°C`],
-    textposition: 'auto',
-    hoverinfo: 'none',
-    marker: {
-      color: 'rgb(58,200,225)',
-      line: {
-        color: 'rgb(8,48,107)',
-        width: 1.5
-      }
+    data: {
+      labels: xValues,
+      datasets: [{
+        label: 'Máxima',
+        data: yMaxTemperatures,
+        backgroundColor: '#3AC8E1',
+        borderColor: '#000',
+        borderWidth: 1.5,
+      },
+      {
+        label: 'Mínima',
+        data: yMinTemperatures,
+        backgroundColor: '#9ECAE1',
+        borderColor: '#000',
+        borderWidth: 1.5
+      }]
+    },
+    options: {
+      plugins: {
+        title: {
+          display: true,
+          text: 'Temperatura máximas e mínimas',
+          font: {
+            size: 32,
+            weight: 'normal'
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      },
+      responsive: true,
+      maintainAspectRatio: false,
     }
-  }
-
-  let minTemperaturesTrace = {
-    x: xValues,
-    y: yMinTemperatures,
-    type: 'bar',
-    name: 'Mínima',
-    text: [`${yMinTemperatures[0]}°C`, `${yMinTemperatures[1]}°C`, `${yMinTemperatures[2]}°C`],
-    textposition: 'auto',
-    hoverinfo: 'none',
-    opacity: 1,
-    marker: {
-      color: 'rgb(158,202,225)',
-      line: {
-        color: 'rgb(8,48,107)',
-        width: 1.5
-      }
-    }
-  }
-
-  let data = [maxTemperaturesTrace, minTemperaturesTrace]
-
-  let layout = {
-    title: 'Temperatura máximas e mínimas',
-    font: { size: 18 },
-    barmode: 'group',
-    width: 700,
-    height: 410,
-  }
-
-  let config = { staticPlot: true, responsive: true }
-  Plotly.newPlot(graph, data, layout, config)
+  });
 }
 
 function GetWeatherAndForecast() {
@@ -264,39 +276,55 @@ function updatesRequestedCity() {
 </script>
 
 <template>
-  <div class="dashboard-container container mt-5 p-4 pt-5 rounded-3">
-    <Form :submit="GetWeatherAndForecast" :input-change="changesCity" :button-click="updatesRequestedCity"
-      :cities="info.autocomplete"></Form>
-    <div class="preloader-container" v-show="!info.isReadyToShowUp">
-      <Preloader />
-    </div>
-    <div class="forecast-container" v-show="info.isReadyToShowUp">
-      <WeatherCard :info="info" />
-      <Graph />
+  <div id="container">
+    <div class="dashboard-container container mt-5 rounded-3">
+      <Form :submit="GetWeatherAndForecast" :input-change="changesCity" :button-click="updatesRequestedCity"
+        :cities="info.autocomplete"></Form>
+      <div class="preloader-container" v-show="!info.isReadyToShowUp">
+        <Preloader />
+      </div>
+      <div class="forecast-container row" v-show="info.isReadyToShowUp">
+        <WeatherCard :info="info" />
+        <Graph />
+      </div>
     </div>
   </div>
-  <Footer>
-  </Footer>
 </template>
 
-<style lang="scss">
+<style scoped lang="scss">
 .dashboard-container {
   background-color: #fff;
-  height: 80vh;
+  height: 80dvh;
+  overflow: hidden;
   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  padding: 48px 24px 24px 24px;
+
+  @media (max-height: 600px) {
+    height: 70dvh;
+  }
+
+  @media (orientation: portrait) {
+    height: 90dvh;
+  }
+
+  @media (max-height: 600px) {
+    width: 70dvw;
+    padding: 24px 24px 24px 24px;
+  }
 }
 
 .forecast-container {
-  display: flex;
+  height: 93%;
+
+  @media (orientation: portrait) and (min-height: 992px) {
+    display: block;
+  }
+
 }
 
 .preloader-container {
   width: 100%;
   margin-top: 10%;
 
-}
-
-#app {
-  height: 93dvh;
 }
 </style>

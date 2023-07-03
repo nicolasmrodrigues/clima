@@ -19,7 +19,6 @@ const prop = defineProps([])
 <style scoped lang="scss">
 .footer {
   text-align: center;
-  height: 10dvh;
 
   &-link {
     display: inline-block;
