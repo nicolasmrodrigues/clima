@@ -7,7 +7,7 @@ const props = defineProps(['submit', 'inputChange', 'buttonClick', 'cities'])
     <div class="col-md-12">
       <form @submit.prevent="submit">
         <div class="row px-3">
-          <div class="col-xl-2 col-md-5 col-sm-5">
+          <div class="col-xl-2 col-md-5 col-10">
             <input @keyup="inputChange" type="text" id="city-input" spellcheck="false" autocomplete="off"
               class="bg-trasparent form-control">
           </div>
@@ -40,8 +40,12 @@ const props = defineProps(['submit', 'inputChange', 'buttonClick', 'cities'])
 
 <style scoped lang="scss">
 #city-input {
-  @media (orientation: portrait) {
+  @media (orientation: portrait) and (min-width: 768px) {
     font-size: 24px;
+  }
+
+  @media (orientation: portrait) and (max-width: 767px) {
+    font-size: 18px;
   }
 }
 
@@ -78,6 +82,10 @@ const props = defineProps(['submit', 'inputChange', 'buttonClick', 'cities'])
 
   @media (orientation: portrait) {
     font-size: 20px;
+  }
+
+  @media (orientation: portrait) and (max-width: 767px) {
+    font-size: 16px;
   }
 
   &,

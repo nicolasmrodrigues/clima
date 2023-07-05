@@ -1,5 +1,4 @@
 <script setup>
-const props = defineProps([])
 </script>
 
 <template>
@@ -11,7 +10,7 @@ const props = defineProps([])
 
 <style lang="scss">
 #canvas-container {
-  max-height: 53dvh;
+  max-height: 55dvh;
   margin-top: 24px;
   margin: 24px 0px 0px 48px;
 
@@ -33,16 +32,13 @@ const props = defineProps([])
 
   @media (orientation: portrait) {
     width: 85%;
-    margin: 2dvh auto 0 auto;
-    max-height: 50dvh;
+    margin: 5dvh auto 0 auto;
+    max-height: 35dvh;
+    height: 100%;
   }
 
   @media (max-width: 767px) {
     display: none;
-  }
-
-  @media (orientation: portrait) and (min-height: 992px) {
-    width: 40%;
   }
 }
 </style>

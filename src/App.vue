@@ -1,13 +1,12 @@
 <script setup>
 import { onMounted, reactive } from 'vue'
-import Preloader from './components/Preloader.vue';
+import Loader from './components/Loader.vue';
 import Form from './components/Form.vue';
 import WeatherCard from './components/WeatherCard.vue';
 import Graph from './components/Graph.vue';
 import Footer from './components/Footer.vue';
 import Chart from 'chart.js/auto'
 import ChartDataLabels from 'chartjs-plugin-datalabels'
-import { f } from 'plotly.js-dist';
 
 const iconBaseUrl = 'https://cdn.weatherapi.com/weather/128x128/'
 
@@ -165,6 +164,9 @@ function drawGraph() {
       }]
     },
     options: {
+      animation: {
+        duration: 0
+      },
       plugins: {
         title: {
           display: true,
@@ -276,19 +278,18 @@ function updatesRequestedCity() {
 </script>
 
 <template>
-  <div id="container">
-    <div class="dashboard-container container mt-5 rounded-3">
-      <Form :submit="GetWeatherAndForecast" :input-change="changesCity" :button-click="updatesRequestedCity"
-        :cities="info.autocomplete"></Form>
-      <div class="preloader-container" v-show="!info.isReadyToShowUp">
-        <Preloader />
-      </div>
-      <div class="forecast-container row" v-show="info.isReadyToShowUp">
-        <WeatherCard :info="info" />
-        <Graph />
-      </div>
+  <div class="dashboard-container container rounded-3">
+    <Form :submit="GetWeatherAndForecast" :input-change="changesCity" :button-click="updatesRequestedCity"
+      :cities="info.autocomplete" />
+    <div v-show="!info.isReadyToShowUp" class="loader-container">
+      <Loader />
+    </div>
+    <div class="forecast-container row" v-show="info.isReadyToShowUp">
+      <WeatherCard :info="info" />
+      <Graph />
     </div>
   </div>
+  <Footer />
 </template>
 
 <style scoped lang="scss">
@@ -298,18 +299,25 @@ function updatesRequestedCity() {
   overflow: hidden;
   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
   padding: 48px 24px 24px 24px;
+  margin-top: 48px;
 
   @media (max-height: 600px) {
     height: 70dvh;
   }
 
   @media (orientation: portrait) {
-    height: 90dvh;
+    height: 85dvh;
+    padding: 32px 24px 24px 24px;
+    margin-top: 24px;
   }
 
   @media (max-height: 600px) {
     width: 70dvw;
     padding: 24px 24px 24px 24px;
+  }
+
+  @media (orientation: portrait) and (max-width: 767px) {
+    width: 95dvw;
   }
 }
 
@@ -319,12 +327,6 @@ function updatesRequestedCity() {
   @media (orientation: portrait) and (min-height: 992px) {
     display: block;
   }
-
-}
-
-.preloader-container {
-  width: 100%;
-  margin-top: 10%;
 
 }
 </style>
