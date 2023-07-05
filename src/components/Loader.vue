@@ -6,14 +6,7 @@
   </span>
 </template>
 
-<style lang="scss">
-.loader-container {
-  display: flex;
-  height: 80%;
-  align-items: center;
-  justify-content: center;
-}
-
+<style scoped lang="scss">
 .loader {
   width: 6dvw;
   height: 6dvw;

@@ -305,7 +305,7 @@ function updatesRequestedCity() {
     height: 70dvh;
   }
 
-  @media (orientation: portrait) {
+  @media (orientation: portrait) and (min-width: 768px) {
     height: 85dvh;
     padding: 32px 24px 24px 24px;
     margin-top: 24px;
@@ -328,5 +328,12 @@ function updatesRequestedCity() {
     display: block;
   }
 
+}
+
+.loader-container {
+  display: flex;
+  height: 80%;
+  align-items: center;
+  justify-content: center;
 }
 </style>
