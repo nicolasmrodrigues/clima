@@ -6,7 +6,7 @@
   </span>
 </template>
 
-<style>
+<style lang="scss">
 .loader-container {
   display: flex;
   height: 80%;
@@ -19,7 +19,12 @@
   height: 6dvw;
   border-radius: 50%;
   position: relative;
-  animation: rotate 1s linear infinite
+  animation: rotate 1s linear infinite;
+
+  @media (max-width: 991px) {
+    width: 10dvw;
+    height: 10dvw;
+  }
 }
 
 .loader::before {
