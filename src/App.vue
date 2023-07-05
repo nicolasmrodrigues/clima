@@ -305,10 +305,13 @@ function updatesRequestedCity() {
     height: 70dvh;
   }
 
-  @media (orientation: portrait) and (min-width: 768px) {
-    height: 85dvh;
+  @media (orientation: portrait) and (max-width: 991px) {
     padding: 32px 24px 24px 24px;
     margin-top: 24px;
+  }
+
+  @media (orientation: portrait) and (min-width: 768px) {
+    height: 85dvh;
   }
 
   @media (max-height: 600px) {
