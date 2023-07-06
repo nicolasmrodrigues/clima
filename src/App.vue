@@ -42,7 +42,7 @@ const info = reactive({
   autocomplete: [],
 })
 
-function createsLocalDateString() {
+const createsLocalDateString = () => {
   let localDate = new Date(info.localDate)
   let localDateYear = localDate.getFullYear()
   let localDateMonth = months[localDate.getMonth()]
@@ -69,7 +69,7 @@ function createsLocalDateString() {
   info.localDateFormatted += `, ${localDateDay}, ${localDateDate} ${localDateMonth}, ${localDateYear}`
 }
 
-function getWeatherInfo(data) {
+const getWeatherInfo = (data) => {
   info.weatherDescription = data.current.condition.text
   info.localDate = data.location.localtime
   info.currentRealFeel = Math.round(data.current.feelslike_c)
@@ -80,7 +80,7 @@ function getWeatherInfo(data) {
 }
 
 
-function getForecastInfo(data) {
+const getForecastInfo = (data) => {
   let forecast = [...data.forecast.forecastday]
 
   for (let i = 0; i < forecast.length; i++) {
@@ -89,7 +89,7 @@ function getForecastInfo(data) {
   }
 }
 
-function getMaxAndMinTemperatures() {
+const getMaxAndMinTemperatures = () => {
   let maxTemperatures = []
   let minTemperatures = []
 
@@ -100,7 +100,7 @@ function getMaxAndMinTemperatures() {
   return [maxTemperatures, minTemperatures]
 }
 
-function getNextDaysOfTheWeek() {
+const getNextDaysOfTheWeek = () => {
   const date = new Date(info.localDate)
   let addToIndex = 0
   const dayToday = DaysOfTheWeek[date.getDay()]
@@ -119,7 +119,7 @@ function getNextDaysOfTheWeek() {
   return nextDays
 }
 
-function drawGraph() {
+const drawGraph = () => {
 
   const canvasContainer = document.getElementById('canvas-container')
   canvasContainer.removeChild(canvasContainer.children[0])
@@ -188,7 +188,7 @@ function drawGraph() {
   });
 }
 
-function GetWeatherAndForecast() {
+const GetWeatherAndForecast = () => {
   info.isReadyToShowUp = false
   info.localDateFormatted = ''
 
@@ -206,18 +206,25 @@ function GetWeatherAndForecast() {
 }
 
 
-function getCurrentLocationInfo() {
+const getCurrentLocationInfo = () => {
   const geolocationUrl = 'https://clima-backend.vercel.app/weather'
   let cityInput = document.getElementById('city-input')
 
   fetch(geolocationUrl).then(response => {
     response.json().then(jsonData => {
       info.city = info.requestedCity = jsonData.location.name
+
+      if (sessionStorage.getItem('requestedCity')) {
+        info.city = info.requestedCity = sessionStorage.getItem('requestedCity')
+      }
+
       GetWeatherAndForecast()
       cityInput.value = jsonData.location.name
+      if (sessionStorage.getItem('requestedCity')) {
+        cityInput.value = sessionStorage.getItem('requestedCity')
+      }
     })
   })
-
 }
 
 window.addEventListener("load", () => {
@@ -230,32 +237,22 @@ onMounted(() => {
   const city2 = document.getElementById('city2')
   const city3 = document.getElementById('city3')
 
-  city1.addEventListener('click', function (e) {
-    info.autocomplete = []
-    info.city = e.target.value.slice(0, e.target.value.indexOf(','))
-    cityInput.value = e.target.value.slice(0, e.target.value.indexOf(','))
-    updatesRequestedCity()
-  })
+  const cities = [city1, city2, city3]
 
-  city2.addEventListener('click', function (e) {
-    info.autocomplete = []
-    info.city = e.target.value.slice(0, e.target.value.indexOf(','))
-    cityInput.value = e.target.value.slice(0, e.target.value.indexOf(','))
-    updatesRequestedCity()
-  })
-
-  city3.addEventListener('click', function (e) {
-    info.autocomplete = []
-    info.city = e.target.value.slice(0, e.target.value.indexOf(','))
-    cityInput.value = e.target.value.slice(0, e.target.value.indexOf(','))
-    updatesRequestedCity()
+  cities.forEach(city => {
+    city.addEventListener('click', e => {
+      info.autocomplete = []
+      info.city = e.target.value.slice(0, e.target.value.indexOf(','))
+      cityInput.value = e.target.value.slice(0, e.target.value.indexOf(','))
+      updatesRequestedCity()
+    })
   })
 
 
 })
 
-function changesCity(event) {
-  info.city = event.target.value.charAt(0).toUpperCase() + event.target.value.slice(1)
+const changesCity = e => {
+  info.city = e.target.value.charAt(0).toUpperCase() + e.target.value.slice(1)
   info.city = info.city.replace('ç', 'c')
   info.city = info.city.replace(' ', '%20')
 
@@ -271,8 +268,9 @@ function changesCity(event) {
   })
 }
 
-function updatesRequestedCity() {
+const updatesRequestedCity = () => {
   info.requestedCity = info.city
+  sessionStorage.setItem('requestedCity', info.requestedCity)
 }
 
 </script>
