@@ -16,6 +16,9 @@ const props = defineProps(['info'])
           <img class="weather-icon" :src="info.iconUrl" alt="">
         </div>
       </div>
+      <div class="row mt-0 mb-3">
+        <div class="col text-center h3 fw-semibold">{{ info.weatherDescription }}</div>
+      </div>
     </div>
     <div class="info-container">
       <div class="row text-nowrap">
