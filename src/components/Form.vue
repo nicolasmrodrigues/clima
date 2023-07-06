@@ -109,10 +109,10 @@ const props = defineProps(['submit', 'inputChange', 'buttonClick', 'cities'])
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    border-bottom: 2px solid #e3e3e3;
+    border-bottom: 2px solid #d6d6d6;
 
     &:hover {
-      background-color: #d6d6d6;
+      background-color: #ebebeb;
     }
   }
 }
