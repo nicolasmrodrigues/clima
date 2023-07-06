@@ -17,7 +17,7 @@ const props = defineProps(['info'])
         </div>
       </div>
       <div class="row mt-0 mb-3">
-        <div class="col text-center h3 fw-semibold">{{ info.weatherDescription }}</div>
+        <div class="col text-center h2 fw-semibold">{{ info.weatherDescription }}</div>
       </div>
     </div>
     <div class="info-container">
