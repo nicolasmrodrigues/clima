@@ -104,7 +104,7 @@ const props = defineProps(['submit', 'inputChange', 'buttonClick', 'cities'])
   &-col {
     box-shadow: rgba(17, 17, 26, 0.05) 2px 2px 0px, rgba(17, 17, 26, 0.1) 0px 2px 2px;
     border: none;
-    background-color: #f1f1f1;
+    background-color: #f0f0f0;
     max-height: 40px;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -112,7 +112,7 @@ const props = defineProps(['submit', 'inputChange', 'buttonClick', 'cities'])
     border-bottom: 2px solid #e3e3e3;
 
     &:hover {
-      background-color: #ebebeb;
+      background-color: #d6d6d6;
     }
   }
 }
