@@ -44,6 +44,8 @@ const props = defineProps(['info'])
 
 <style scoped lang="scss">
 .info-container {
+  justify-content: center;
+
   @media (max-width: 767px) {
     display: flex;
   }
