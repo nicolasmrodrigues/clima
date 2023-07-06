@@ -44,7 +44,7 @@ const props = defineProps(['info'])
 
 <style scoped lang="scss">
 .info-container {
-  @media (orientation: portrait) and (max-width: 767px) {
+  @media (max-width: 767px) {
     display: flex;
   }
 }

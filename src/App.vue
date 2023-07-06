@@ -320,7 +320,7 @@ function updatesRequestedCity() {
   }
 
   @media (orientation: portrait) and (max-width: 767px) {
-    width: 95dvw;
+    width: 90dvw;
   }
 }
 
