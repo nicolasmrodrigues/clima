@@ -172,7 +172,7 @@ function drawGraph() {
           display: true,
           text: 'Temperatura máximas e mínimas',
           font: {
-            size: 32,
+            size: 28,
             weight: 'normal'
           }
         }
@@ -306,7 +306,7 @@ function updatesRequestedCity() {
   }
 
   @media (orientation: portrait) and (max-width: 991px) {
-    padding: 32px 24px 24px 24px;
+    padding: 32px 12px 24px 12px;
     margin-top: 24px;
   }
 
