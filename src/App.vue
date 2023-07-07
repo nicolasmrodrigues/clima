@@ -293,7 +293,7 @@ const updatesRequestedCity = () => {
   padding: 48px 24px 24px 24px;
   margin-top: 48px;
 
-  @media (max-width: 991px) {
+  @media (max-width: 991px) or (max-height: 550px) {
     padding: 32px 12px 24px 12px;
     margin-top: 24px;
   }
