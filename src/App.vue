@@ -299,10 +299,6 @@ const updatesRequestedCity = () => {
   padding: 48px 24px 24px 24px;
   margin-top: 48px;
 
-  @media (max-height: 600px) {
-    height: 70dvh;
-  }
-
   @media (orientation: portrait) and (max-width: 991px) {
     padding: 32px 12px 24px 12px;
     margin-top: 24px;
