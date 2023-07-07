@@ -54,21 +54,30 @@ const props = defineProps(['info'])
   }
 }
 
-.row:last-child {
-  margin-top: 24px;
-
-  @media (max-height: 600px) {
-    margin-top: 0;
+.row {
+  .row:nth-child(3) {
+    @media (orientation: portrait) and (max-height: 600px) {
+      display: none;
+    }
   }
 
-  @media (orientation: portrait) and (min-width: 768px) {
-    margin-top: 16px;
-  }
+  &:last-child {
+    margin-top: 24px;
 
-  @media (orientation: portrait) and (max-width: 767px) {
-    margin-top: 0;
+    @media (max-height: 600px) {
+      margin-top: 0;
+    }
+
+    @media (orientation: portrait) and (min-width: 768px) {
+      margin-top: 16px;
+    }
+
+    @media (orientation: portrait) and (max-width: 767px) {
+      margin-top: 0;
+    }
   }
 }
+
 
 .realfeel-col {
 
