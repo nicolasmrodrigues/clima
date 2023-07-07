@@ -19,12 +19,20 @@
 .footer {
   text-align: center;
 
+  @media (max-height: 400px) {
+    font-size: 14px;
+  }
+
   &-link {
     display: inline-block;
     text-decoration: none;
 
     &:first-child {
       padding-top: 1.5dvh;
+
+      @media (max-height: 400px) {
+        padding: 0;
+      }
     }
   }
 }
