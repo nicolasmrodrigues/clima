@@ -100,6 +100,10 @@ const props = defineProps(['info'])
   @media (orientation: portrait) and (max-width: 767px) {
     font-size: 18px;
   }
+
+  @media (max-height: 400px) {
+    display: none;
+  }
 }
 
 .label {
@@ -116,10 +120,6 @@ const props = defineProps(['info'])
 
   @media (orientation: portrait) and (min-width: 768px) {
     font-size: 1.75rem;
-  }
-
-  @media (max-width: 400px) {
-    display: none;
   }
 }
 
