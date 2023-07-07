@@ -309,7 +309,6 @@ const updatesRequestedCity = () => {
   }
 
   @media (max-height: 600px) {
-    width: 70dvw;
     padding: 24px 24px 24px 24px;
   }
 
