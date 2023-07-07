@@ -7,7 +7,7 @@ const props = defineProps(['submit', 'inputChange', 'buttonClick', 'cities'])
     <div class="col-md-12">
       <form @submit.prevent="submit">
         <div class="row px-3">
-          <div class="col-xl-2 col-md-5 col-10">
+          <div class="col-xl-2 col-md-5 col-sm-5 col-10">
             <input @keyup="inputChange" type="text" id="city-input" spellcheck="false" autocomplete="off"
               class="bg-trasparent form-control">
           </div>
@@ -18,17 +18,17 @@ const props = defineProps(['submit', 'inputChange', 'buttonClick', 'cities'])
         </div>
         <div class="autocomplete">
           <div v-show="cities[0]" class="row autocomplete-row ms-3 mt-2" :class="{ last: !cities[1] }">
-            <button class="col-md-12 autocomplete-col pe-1 text-start" id="city1" :value="cities[0]">
+            <button class="col-md-12 autocomplete-col pe-1 text-start city" :value="cities[0]">
               {{ cities[0] }}
             </button>
           </div>
           <div v-show="cities[1]" class="row autocomplete-row ms-3" :class="{ last: !cities[2] }">
-            <button class="col-md-12 autocomplete-col pe-1 text-start" id="city2" :value="cities[1]">
+            <button class="col-md-12 autocomplete-col pe-1 text-start city" :value="cities[1]">
               {{ cities[1] }}
             </button>
           </div>
           <div v-show="cities[2]" class="row autocomplete-row ms-3" :class="{ last: cities[2] }">
-            <button class="col-md-12 autocomplete-col pe-1 text-start" id="city3" :value="cities[2]">
+            <button class="col-md-12 autocomplete-col pe-1 text-start city" :value="cities[2]">
               {{ cities[2] }}
             </button>
           </div>
@@ -80,11 +80,11 @@ const props = defineProps(['submit', 'inputChange', 'buttonClick', 'cities'])
   font-size: 14px;
   z-index: 1;
 
-  @media (orientation: portrait) {
+  @media (max-width: 991px) {
     font-size: 20px;
   }
 
-  @media (orientation: portrait) and (max-width: 767px) {
+  @media (max-width: 767px) {
     font-size: 16px;
   }
 

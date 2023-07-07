@@ -13,11 +13,11 @@ const props = defineProps(['info'])
       </div>
       <div class="row">
         <div class="col-md-12 text-center">
-          <img class="weather-icon" :src="info.iconUrl" alt="">
+          <img class="weather-icon" :src="info.iconUrl" alt="Weather icon">
         </div>
       </div>
       <div class="row mt-0 mb-3">
-        <div class="col text-center h2 fw-semibold">{{ info.weatherDescription }}</div>
+        <div class="col text-center h2 fw-semibold mb-0">{{ info.weatherDescription }}</div>
       </div>
     </div>
     <div class="info-container">
@@ -68,11 +68,11 @@ const props = defineProps(['info'])
       margin-top: 0;
     }
 
-    @media (orientation: portrait) and (min-width: 768px) {
+    @media (min-width: 768px) {
       margin-top: 16px;
     }
 
-    @media (orientation: portrait) and (max-width: 767px) {
+    @media (max-width: 767px) {
       margin-top: 0;
     }
   }
@@ -80,21 +80,20 @@ const props = defineProps(['info'])
 
 
 .realfeel-col {
-
-  @media (orientation: portrait) and (max-width: 767px) {
+  @media (max-width: 767px) {
     margin-top: 16px;
   }
 }
 
 .windspeed-col {
-  @media (orientation: portrait) and (max-width: 767px) {
+  @media (max-width: 767px) {
     margin-top: 16px;
   }
 
 }
 
 .local-time {
-  @media (orientation: portrait) and (min-width: 992px) {
+  @media (orientation: portrait) and (min-width: 768px) {
     font-size: 24px;
   }
 
@@ -121,13 +120,12 @@ const props = defineProps(['info'])
 }
 
 .weather-icon {
-
-  @media (max-height: 550px) or (max-width: 991px) {
-    width: 80px;
-  }
-
   @media (orientation: portrait) or (max-width: 767px) {
     width: 100px;
+  }
+
+  @media (max-height: 550px) {
+    width: 80px;
   }
 }
 

@@ -233,22 +233,15 @@ window.addEventListener("load", () => {
 
 onMounted(() => {
   const cityInput = document.getElementById('city-input')
-  const city1 = document.getElementById('city1')
-  const city2 = document.getElementById('city2')
-  const city3 = document.getElementById('city3')
+  const cities = document.getElementsByClassName('city')
 
-  const cities = [city1, city2, city3]
-
-  cities.forEach(city => {
-    city.addEventListener('click', e => {
+  for (let i = 0; i < cities.length; i++) {
+    cities[i].addEventListener('click', e => {
       info.autocomplete = []
-      info.city = e.target.value.slice(0, e.target.value.indexOf(','))
-      cityInput.value = e.target.value.slice(0, e.target.value.indexOf(','))
+      info.city = cityInput.value = e.target.value.slice(0, e.target.value.indexOf(','))
       updatesRequestedCity()
     })
-  })
-
-
+  }
 })
 
 const changesCity = e => {
@@ -294,12 +287,13 @@ const updatesRequestedCity = () => {
 .dashboard-container {
   background-color: #fff;
   height: 80dvh;
+  max-width: 90dvw;
   overflow: hidden;
   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
   padding: 48px 24px 24px 24px;
   margin-top: 48px;
 
-  @media (orientation: portrait) and (max-width: 991px) {
+  @media (max-width: 991px) {
     padding: 32px 12px 24px 12px;
     margin-top: 24px;
   }
@@ -312,7 +306,7 @@ const updatesRequestedCity = () => {
     padding: 24px 24px 24px 24px;
   }
 
-  @media (orientation: portrait) and (max-width: 767px) {
+  @media (max-width: 767px) {
     width: 90dvw;
   }
 }

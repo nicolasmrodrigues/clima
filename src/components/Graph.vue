@@ -32,8 +32,8 @@
 
   @media (orientation: portrait) {
     width: 85%;
-    margin: 5dvh auto 0 auto;
-    max-height: 35dvh;
+    margin: 3dvh auto 0 auto;
+    max-height: 33dvh;
     height: 100%;
   }
 
