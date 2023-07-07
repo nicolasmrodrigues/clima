@@ -56,7 +56,7 @@ const props = defineProps(['info'])
 
 .row {
   .row:nth-child(3) {
-    @media (orientation: portrait) and (max-height: 600px) {
+    @media (max-height: 600px) {
       display: none;
     }
   }
