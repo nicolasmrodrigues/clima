@@ -26,10 +26,6 @@
     max-height: 55dvh;
   }
 
-  @media (max-width: 991px) {
-    max-height: 45dvh;
-  }
-
   @media (orientation: portrait) {
     width: 85%;
     margin: 3dvh auto 0 auto;
