@@ -117,6 +117,10 @@ const props = defineProps(['info'])
   @media (orientation: portrait) and (min-width: 768px) {
     font-size: 1.75rem;
   }
+
+  @media (max-width: 400px) {
+    display: none;
+  }
 }
 
 .weather-icon {
