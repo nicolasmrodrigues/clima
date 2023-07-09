@@ -151,5 +151,9 @@ const props = defineProps(['info']);
 	@media (max-height: 600px) {
 		max-height: 50dvh;
 	}
+
+	@media (max-width: 767px) {
+		margin-top: 32px;
+	}
 }
 </style>
