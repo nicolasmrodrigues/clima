@@ -102,7 +102,7 @@ const props = defineProps(['info']);
 		font-size: 18px;
 	}
 
-	@media (max-height: 400px) {
+	@media (max-height: 450px) {
 		display: none;
 	}
 }
@@ -146,10 +146,6 @@ const props = defineProps(['info']);
 	@media (orientation: portrait) {
 		flex: 0 0 auto;
 		width: 100%;
-	}
-
-	@media (max-height: 650px) {
-		margin-top: 16px;
 	}
 
 	@media (max-height: 600px) {
