@@ -1,4 +1,5 @@
 <script setup>
+// eslint-disable-next-line no-unused-vars
 const props = defineProps(['info']);
 </script>
 
@@ -7,12 +8,8 @@ const props = defineProps(['info']);
 		<div class="container">
 			<div class="row">
 				<div class="col-md-12 text-center local-time">
-					<span class="d-block" v-if="info.localDateFormatted"
-						>Horário de {{ info.requestedCity }}:
-					</span>
-					<span v-if="info.localDateFormatted">{{
-						info.localDateFormatted
-					}}</span>
+					<span class="d-block" v-if="info.localDateFormatted">Horário de {{ info.requestedCity }}: </span>
+					<span v-if="info.localDateFormatted">{{ info.localDateFormatted }}</span>
 				</div>
 			</div>
 			<div class="row">
@@ -34,23 +31,17 @@ const props = defineProps(['info']);
 				</div>
 				<div class="col-md-6 text-center px-0 windspeed-col">
 					<span class="fw-semibold label d-block">Velocidade do vento</span>
-					<span class="fw-semibold info h2 info-windspeed"
-						>{{ info.windSpeed }} km/h</span
-					>
+					<span class="fw-semibold info h2 info-windspeed">{{ info.windSpeed }} km/h</span>
 				</div>
 			</div>
 			<div class="row text-nowrap">
 				<div class="col-md-6 text-center px-0">
 					<span class="fw-semibold label d-block">Temperatura</span>
-					<span class="fw-semibold info h2 text-center"
-						>{{ info.currentTemperature }}°C</span
-					>
+					<span class="fw-semibold info h2 text-center">{{ info.currentTemperature }}°C</span>
 				</div>
 				<div class="col-md-6 text-center px-0 realfeel-col">
 					<span class="fw-semibold label d-block">Sensação térmica</span>
-					<span class="fw-semibold info h2 info-realfeel"
-						>{{ info.currentRealFeel }}°C</span
-					>
+					<span class="fw-semibold info h2 info-realfeel">{{ info.currentRealFeel }}°C</span>
 				</div>
 			</div>
 		</div>

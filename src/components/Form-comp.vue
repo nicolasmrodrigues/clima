@@ -1,4 +1,5 @@
 <script setup>
+// eslint-disable-next-line no-unused-vars
 const props = defineProps(['submit', 'inputChange', 'buttonClick', 'cities']);
 </script>
 
@@ -8,60 +9,28 @@ const props = defineProps(['submit', 'inputChange', 'buttonClick', 'cities']);
 			<form @submit.prevent="submit">
 				<div class="row px-3">
 					<div class="col-xl-2 col-md-5 col-sm-5 col-10">
-						<input
-							@keyup="inputChange"
-							type="text"
-							id="city-input"
-							spellcheck="false"
-							autocomplete="off"
-							class="bg-trasparent form-control"
-						/>
-						<div class="invalid-feedback">Forneça uma cidade válida.</div>
+						<input @keyup="inputChange" type="text" id="city-input" spellcheck="false" autocomplete="off" class="bg-trasparent form-control" />
+						<div class="invalid-feedback position-absolute">Forneça uma cidade válida.</div>
 					</div>
 					<div class="col-2 btn-col">
-						<button
-							@click="buttonClick"
-							type="submit"
-							class="btn btn-primary btn-search"
-						>
+						<button @click="buttonClick" type="submit" class="btn btn-primary btn-search">
 							<i class="bi bi-search"></i>
 						</button>
 					</div>
 				</div>
 				<div class="autocomplete">
-					<div
-						v-show="cities[0]"
-						class="row autocomplete-row ms-3 mt-2"
-						:class="{ last: !cities[1] }"
-					>
-						<button
-							class="col-md-12 autocomplete-col pe-1 text-start city"
-							:value="cities[0]"
-						>
+					<div v-show="cities[0]" class="row autocomplete-row ms-3 mt-2" :class="{ last: !cities[1] }">
+						<button class="col-md-12 autocomplete-col pe-1 text-start city" :value="cities[0]">
 							{{ cities[0] }}
 						</button>
 					</div>
-					<div
-						v-show="cities[1]"
-						class="row autocomplete-row ms-3"
-						:class="{ last: !cities[2] }"
-					>
-						<button
-							class="col-md-12 autocomplete-col pe-1 text-start city"
-							:value="cities[1]"
-						>
+					<div v-show="cities[1]" class="row autocomplete-row ms-3" :class="{ last: !cities[2] }">
+						<button class="col-md-12 autocomplete-col pe-1 text-start city" :value="cities[1]">
 							{{ cities[1] }}
 						</button>
 					</div>
-					<div
-						v-show="cities[2]"
-						class="row autocomplete-row ms-3"
-						:class="{ last: cities[2] }"
-					>
-						<button
-							class="col-md-12 autocomplete-col pe-1 text-start city"
-							:value="cities[2]"
-						>
+					<div v-show="cities[2]" class="row autocomplete-row ms-3" :class="{ last: cities[2] }">
+						<button class="col-md-12 autocomplete-col pe-1 text-start city" :value="cities[2]">
 							{{ cities[2] }}
 						</button>
 					</div>

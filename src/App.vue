@@ -9,22 +9,8 @@ import Chart from 'chart.js/auto';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 const iconBaseUrl = 'https://cdn.weatherapi.com/weather/128x128/';
-
 const DaysOfTheWeek = ['Dom', 'Seg', 'Terç', 'Qua', 'Qui', 'Sex', 'Sáb'];
-const months = [
-	'Jan',
-	'Fev',
-	'Mar',
-	'Abr',
-	'Maio',
-	'Jun',
-	'Jul',
-	'Ago',
-	'Set',
-	'Out',
-	'Nov',
-	'Dez'
-];
+const months = ['Jan', 'Fev', 'Mar', 'Abr', 'Maio', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
 
 const info = reactive({
 	city: '',
@@ -81,29 +67,21 @@ const createsLocalDateString = () => {
 	info.localDateFormatted = `${localDateHours}:${localDateMinutes} ${period}, ${localDateDay}, ${localDateDate} ${localDateMonth}, ${localDateYear}`;
 };
 
-const getWeatherInfo = (data) => {
+const updateWeatherInfo = (data) => {
+	const { feelslike_c, temp_c, wind_kph, humidity } = data.current;
 	info.weatherDescription = data.current.condition.text;
 	info.localDate = data.location.localtime;
-	info.currentRealFeel = Math.round(data.current.feelslike_c);
-	info.currentTemperature = Math.round(data.current.temp_c);
-	info.windSpeed = Math.round(data.current.wind_kph);
-	info.currentHumidity = data.current.humidity;
-	info.iconUrl = `${iconBaseUrl}${data.current.condition.icon.slice(
-		35,
-		data.current.condition.icon.length
-	)}`;
-};
+	info.currentRealFeel = Math.round(feelslike_c);
+	info.currentTemperature = Math.round(temp_c);
+	info.windSpeed = Math.round(wind_kph);
+	info.currentHumidity = humidity;
+	info.iconUrl = `${iconBaseUrl}${data.current.condition.icon.slice(35, data.current.condition.icon.length)}`;
 
-const getForecastInfo = (data) => {
 	let forecast = [...data.forecast.forecastday];
 
 	for (let i = 0; i < forecast.length; i++) {
-		info.forecastMaxAndMinTemperatures[i].max = Math.round(
-			forecast[i].day.maxtemp_c
-		);
-		info.forecastMaxAndMinTemperatures[i].min = Math.round(
-			forecast[i].day.mintemp_c
-		);
+		info.forecastMaxAndMinTemperatures[i].max = Math.round(forecast[i].day.maxtemp_c);
+		info.forecastMaxAndMinTemperatures[i].min = Math.round(forecast[i].day.mintemp_c);
 	}
 };
 
@@ -206,7 +184,7 @@ const drawGraph = () => {
 	});
 };
 
-const GetWeatherAndForecast = () => {
+const getWeatherAndForecast = () => {
 	const cityInput = document.getElementById('city-input');
 	info.isReadyToShowUp = false;
 
@@ -222,15 +200,11 @@ const GetWeatherAndForecast = () => {
 			}
 			info.localDateFormatted = '';
 
-			getWeatherInfo(jsonData);
-			getForecastInfo(jsonData);
+			updateWeatherInfo(jsonData);
 			createsLocalDateString();
 			drawGraph();
 			if (info.city === '') {
-				cityInput.value =
-					info.city =
-					info.requestedCity =
-						jsonData.location.name;
+				cityInput.value = info.city = info.requestedCity = jsonData.location.name;
 			}
 			info.isReadyToShowUp = true;
 		});
@@ -245,11 +219,10 @@ const getCurrentLocationInfo = () => {
 			info.city = info.requestedCity = jsonData.location.name;
 
 			if (sessionStorage.getItem('requestedCity')) {
-				info.city = info.requestedCity =
-					sessionStorage.getItem('requestedCity');
+				info.city = info.requestedCity = sessionStorage.getItem('requestedCity');
 			}
 
-			GetWeatherAndForecast();
+			getWeatherAndForecast();
 			cityInput.value = jsonData.location.name;
 			if (sessionStorage.getItem('requestedCity')) {
 				cityInput.value = sessionStorage.getItem('requestedCity');
@@ -258,10 +231,6 @@ const getCurrentLocationInfo = () => {
 	});
 };
 
-window.addEventListener('load', () => {
-	getCurrentLocationInfo();
-});
-
 onMounted(() => {
 	const cityInput = document.getElementById('city-input');
 	const cities = document.getElementsByClassName('city');
@@ -269,13 +238,12 @@ onMounted(() => {
 	for (let i = 0; i < cities.length; i++) {
 		cities[i].addEventListener('click', (e) => {
 			info.autocomplete = [];
-			info.city = cityInput.value = e.target.value.slice(
-				0,
-				e.target.value.indexOf(',')
-			);
+			info.city = cityInput.value = e.target.value.slice(0, e.target.value.indexOf(','));
 			updatesRequestedCity();
 		});
 	}
+
+	getCurrentLocationInfo();
 });
 
 const changesCity = (e) => {
@@ -313,12 +281,7 @@ const updatesRequestedCity = () => {
 
 <template>
 	<div class="dashboard-container container rounded-3">
-		<FormComp
-			:submit="GetWeatherAndForecast"
-			:input-change="changesCity"
-			:button-click="updatesRequestedCity"
-			:cities="info.autocomplete"
-		/>
+		<FormComp :submit="getWeatherAndForecast" :input-change="changesCity" :button-click="updatesRequestedCity" :cities="info.autocomplete" />
 		<div v-show="!info.isReadyToShowUp" class="loader-container">
 			<Loader />
 		</div>
