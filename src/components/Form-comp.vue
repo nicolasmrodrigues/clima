@@ -16,6 +16,7 @@ const props = defineProps(['submit', 'inputChange', 'buttonClick', 'cities']);
 							autocomplete="off"
 							class="bg-trasparent form-control"
 						/>
+						<div class="invalid-feedback">Forneça uma cidade válida.</div>
 					</div>
 					<div class="col-2 btn-col">
 						<button
@@ -82,6 +83,8 @@ const props = defineProps(['submit', 'inputChange', 'buttonClick', 'cities']);
 }
 
 .btn {
+	max-height: 37.5px;
+
 	&-col {
 		display: flex;
 	}

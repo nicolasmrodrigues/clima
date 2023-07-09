@@ -1,10 +1,10 @@
 <script setup>
 import { onMounted, reactive } from 'vue';
 import Loader from './components/Loader.vue';
-import Form from './components/Form.vue';
+import FormComp from './components/Form-comp.vue';
 import WeatherCard from './components/WeatherCard.vue';
 import Graph from './components/Graph.vue';
-import Footer from './components/Footer.vue';
+import FooterComp from './components/Footer-comp.vue';
 import Chart from 'chart.js/auto';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 
@@ -56,30 +56,29 @@ const info = reactive({
 });
 
 const createsLocalDateString = () => {
-	let localDate = new Date(info.localDate);
-	let localDateYear = localDate.getFullYear();
-	let localDateMonth = months[localDate.getMonth()];
-	let localDateDate = localDate.getDate();
-	let localDateDay = DaysOfTheWeek[localDate.getDay()];
+	const localDate = new Date(info.localDate);
+	const localDateYear = localDate.getFullYear();
+	const localDateMonth = months[localDate.getMonth()];
+	const localDateDate = localDate.getDate();
+	const localDateDay = DaysOfTheWeek[localDate.getDay()];
 	let localDateHours = localDate.getHours();
 	let localDateMinutes = localDate.getMinutes();
+
+	let period = 'AM';
+	if (localDateHours >= 12) {
+		period = 'PM';
+		if (localDateHours > 12) {
+			localDateHours -= 12;
+		}
+	} else if (localDateHours === 0) {
+		localDateHours = 12;
+	}
 
 	if (localDateMinutes < 10) {
 		localDateMinutes = `0${localDateMinutes}`;
 	}
 
-	if (localDateHours === 0) {
-		localDateHours = 12;
-		info.localDateFormatted += `${localDateHours}:${localDateMinutes} AM`;
-	} else if (localDateHours < 12) {
-		info.localDateFormatted += `${localDateHours}:${localDateMinutes} AM`;
-	} else if (localDateHours === 12) {
-		info.localDateFormatted += `${localDateHours}:${localDateMinutes} PM`;
-	} else if (localDateHours > 12) {
-		info.localDateFormatted += `${localDateHours - 12}:${localDateMinutes} PM`;
-	}
-
-	info.localDateFormatted += `, ${localDateDay}, ${localDateDate} ${localDateMonth}, ${localDateYear}`;
+	info.localDateFormatted = `${localDateHours}:${localDateMinutes} ${period}, ${localDateDay}, ${localDateDate} ${localDateMonth}, ${localDateYear}`;
 };
 
 const getWeatherInfo = (data) => {
@@ -119,20 +118,19 @@ const getMaxAndMinTemperatures = () => {
 	return [maxTemperatures, minTemperatures];
 };
 
-const getNextDaysOfTheWeek = () => {
+const getNextDays = () => {
 	const date = new Date(info.localDate);
-	let addToIndex = 0;
 	const dayToday = DaysOfTheWeek[date.getDay()];
-	let indexOfDayToday = DaysOfTheWeek.indexOf(dayToday);
-	let nextDays = [];
+	let dayIndex = DaysOfTheWeek.indexOf(dayToday);
+	const nextDays = [];
 
 	for (let i = 0; i < 3; i++) {
-		if (indexOfDayToday + addToIndex === 7) {
-			indexOfDayToday = 0;
-			addToIndex = 0;
+		if (dayIndex === DaysOfTheWeek.length - 1) {
+			dayIndex = 0;
+		} else {
+			dayIndex++;
 		}
-		nextDays.push(`${DaysOfTheWeek[indexOfDayToday + addToIndex]}.`);
-		addToIndex += 1;
+		nextDays.push(`${DaysOfTheWeek[dayIndex]}.`);
 	}
 
 	return nextDays;
@@ -150,7 +148,7 @@ const drawGraph = () => {
 
 	const maxAndMinTemperatures = getMaxAndMinTemperatures();
 
-	const xValues = getNextDaysOfTheWeek();
+	const xValues = getNextDays();
 	const yMaxTemperatures = maxAndMinTemperatures[0];
 	const yMinTemperatures = maxAndMinTemperatures[1];
 
@@ -209,20 +207,33 @@ const drawGraph = () => {
 };
 
 const GetWeatherAndForecast = () => {
+	const cityInput = document.getElementById('city-input');
 	info.isReadyToShowUp = false;
-	info.localDateFormatted = '';
 
-	let weatherAndForecastUrl = `https://clima-backend.vercel.app/weather?city=${info.city}&days=3`;
+	const weatherAndForecastUrl = `https://clima-backend.vercel.app/weather?city=${info.city}&days=3`;
 
-	fetch(weatherAndForecastUrl).then((response) => {
-		response.json().then((jsonData) => {
+	fetch(weatherAndForecastUrl)
+		.then((response) => response.json())
+		.then((jsonData) => {
+			if (jsonData.error) {
+				cityInput.classList.add('is-invalid');
+				info.isReadyToShowUp = true;
+				return;
+			}
+			info.localDateFormatted = '';
+
 			getWeatherInfo(jsonData);
 			getForecastInfo(jsonData);
 			createsLocalDateString();
 			drawGraph();
+			if (info.city === '') {
+				cityInput.value =
+					info.city =
+					info.requestedCity =
+						jsonData.location.name;
+			}
 			info.isReadyToShowUp = true;
 		});
-	});
 };
 
 const getCurrentLocationInfo = () => {
@@ -268,12 +279,13 @@ onMounted(() => {
 });
 
 const changesCity = (e) => {
+	const cityInput = document.getElementById('city-input');
+	cityInput.classList.remove('is-invalid');
 	info.city = e.target.value.charAt(0).toUpperCase() + e.target.value.slice(1);
 	info.city = info.city.replace('ç', 'c');
 	info.city = info.city.replace(' ', '%20');
 
 	const url = `https://clima-backend.vercel.app/search?city=${info.city}&days=1`;
-
 	fetch(url).then((response) => {
 		response.json().then((jsonData) => {
 			info.autocomplete = [];
@@ -285,14 +297,23 @@ const changesCity = (e) => {
 };
 
 const updatesRequestedCity = () => {
-	info.requestedCity = info.city;
-	sessionStorage.setItem('requestedCity', info.requestedCity);
+	const url = `https://clima-backend.vercel.app/weather?city=${info.city}&days=1`;
+	fetch(url).then((response) => {
+		response.json().then((jsonData) => {
+			if (jsonData.error) {
+				return;
+			}
+
+			info.requestedCity = info.city;
+			sessionStorage.setItem('requestedCity', info.requestedCity);
+		});
+	});
 };
 </script>
 
 <template>
 	<div class="dashboard-container container rounded-3">
-		<Form
+		<FormComp
 			:submit="GetWeatherAndForecast"
 			:input-change="changesCity"
 			:button-click="updatesRequestedCity"
@@ -306,7 +327,7 @@ const updatesRequestedCity = () => {
 			<Graph />
 		</div>
 	</div>
-	<Footer />
+	<FooterComp />
 </template>
 
 <style scoped lang="scss">

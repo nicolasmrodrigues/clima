@@ -118,7 +118,7 @@ const props = defineProps(['info']);
 
 .label {
 	font-size: 1.25rem;
-	color: #757575;
+	color: #6c6c6c;
 
 	@media (max-height: 600px) or (max-width: 1400px) {
 		font-size: 1.15rem;
