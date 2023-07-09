@@ -146,7 +146,6 @@ const props = defineProps(['info']);
 	@media (orientation: portrait) {
 		flex: 0 0 auto;
 		width: 100%;
-		margin-top: 24px;
 	}
 
 	@media (max-height: 650px) {
