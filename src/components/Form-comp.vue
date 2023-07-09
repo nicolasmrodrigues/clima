@@ -52,8 +52,6 @@ const props = defineProps(['submit', 'inputChange', 'buttonClick', 'cities']);
 }
 
 .btn {
-	max-height: 37.5px;
-
 	&-col {
 		display: flex;
 	}

@@ -1,9 +1,9 @@
 <script setup>
 import { onMounted, reactive } from 'vue';
-import Loader from './components/Loader.vue';
+import LoaderComp from './components/Loader-comp.vue';
 import FormComp from './components/Form-comp.vue';
-import WeatherCard from './components/WeatherCard.vue';
-import Graph from './components/Graph.vue';
+import WeatherCardComp from './components/WeatherCard-comp.vue';
+import GraphComp from './components/Graph-comp.vue';
 import FooterComp from './components/Footer-comp.vue';
 import Chart from 'chart.js/auto';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
@@ -283,11 +283,11 @@ const updatesRequestedCity = () => {
 	<div class="dashboard-container container rounded-3">
 		<FormComp :submit="getWeatherAndForecast" :input-change="changesCity" :button-click="updatesRequestedCity" :cities="info.autocomplete" />
 		<div v-show="!info.isReadyToShowUp" class="loader-container">
-			<Loader />
+			<LoaderComp />
 		</div>
 		<div class="forecast-container row" v-show="info.isReadyToShowUp">
-			<WeatherCard :info="info" />
-			<Graph />
+			<WeatherCardComp :info="info" />
+			<GraphComp />
 		</div>
 	</div>
 	<FooterComp />
