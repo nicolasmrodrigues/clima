@@ -1,6 +1,7 @@
 <script setup>
 // eslint-disable-next-line no-unused-vars
 const props = defineProps(['submit', 'inputChange', 'buttonClick', 'cities']);
+import { vMaska } from 'maska';
 </script>
 
 <template>
@@ -9,7 +10,17 @@ const props = defineProps(['submit', 'inputChange', 'buttonClick', 'cities']);
 			<form @submit.prevent="submit">
 				<div class="row px-3">
 					<div class="col-xl-2 col-md-5 col-sm-5 col-10">
-						<input @keyup="inputChange" type="text" id="city-input" spellcheck="false" autocomplete="off" class="bg-trasparent form-control" />
+						<input
+							@keyup="inputChange"
+							type="text"
+							v-maska
+							data-maska="A A"
+							data-maska-tokens="A:[a-zA-Z]:multiple"
+							id="city-input"
+							spellcheck="false"
+							autocomplete="off"
+							class="bg-trasparent form-control"
+						/>
 						<div class="invalid-feedback position-absolute">Forneça uma cidade válida.</div>
 					</div>
 					<div class="col-2 btn-col">
