@@ -14,11 +14,8 @@
 <style scoped lang="scss">
 .footer {
 	text-align: center;
-	padding-top: 1.5dvh;
-
-	@media (max-height: 400px) {
-		font-size: 14px;
-	}
+	margin-top: 1.5dvh;
+	margin-bottom: 1.5dvh;
 
 	&-link {
 		display: inline-block;
