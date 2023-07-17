@@ -18,7 +18,7 @@ const props = defineProps(['info']);
 				</div>
 			</div>
 			<div class="row mt-0 mb-3">
-				<div class="col text-center h2 fw-semibold mb-0">
+				<div class="col text-center h2 fw-semibold mb-0 text-nowrap">
 					{{ info.weatherDescription }}
 				</div>
 			</div>
@@ -59,7 +59,7 @@ const props = defineProps(['info']);
 
 .row {
 	.row:nth-child(3) {
-		@media (max-height: 600px) {
+		@media (max-height: 650px) {
 			display: none;
 		}
 	}

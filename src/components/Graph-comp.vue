@@ -18,7 +18,7 @@
 	}
 
 	@media (max-height: 650px) {
-		margin-top: 4px;
+		margin-top: 8dvh;
 	}
 
 	@media (max-height: 600px) {
@@ -28,7 +28,7 @@
 	@media (orientation: portrait) {
 		width: 85%;
 		margin: 3dvh auto 0 auto;
-		max-height: 33dvh;
+		max-height: 31dvh;
 		height: 100%;
 	}
 
