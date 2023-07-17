@@ -297,6 +297,7 @@ const updatesRequestedCity = () => {
 .dashboard-container {
 	background-color: #fff;
 	height: 80dvh;
+	min-height: 300px;
 	max-width: 90dvw;
 	overflow: hidden;
 	box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
