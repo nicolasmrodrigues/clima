@@ -115,10 +115,6 @@ const props = defineProps(['info']);
 		font-size: 1.15rem;
 	}
 
-	@media (max-height: 500px) or (max-width: 991px) {
-		font-size: 1rem;
-	}
-
 	@media (orientation: portrait) and (min-width: 768px) {
 		font-size: 1.75rem;
 	}

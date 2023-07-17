@@ -9,6 +9,7 @@
 <style lang="scss">
 #canvas-container {
 	max-height: 55dvh;
+	min-height: 225px;
 	margin-top: 24px;
 	margin: 24px 0px 0px 48px;
 
