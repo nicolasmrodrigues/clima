@@ -18,13 +18,13 @@ const props = defineProps(['info']);
 				</div>
 			</div>
 			<div class="row mt-0 mb-3">
-				<div class="col text-center h2 fw-semibold mb-0 text-nowrap">
+				<div class="col text-center h2 fw-semibold mb-0">
 					{{ info.weatherDescription }}
 				</div>
 			</div>
 		</div>
-		<div class="info-container">
-			<div class="row text-nowrap">
+		<div class="info-container text-nowrap">
+			<div class="row">
 				<div class="col-md-6 text-center px-0">
 					<span class="fw-semibold label d-block">Humidade</span>
 					<span class="fw-semibold info h2">{{ info.currentHumidity }}%</span>
@@ -34,7 +34,7 @@ const props = defineProps(['info']);
 					<span class="fw-semibold info h2 info-windspeed">{{ info.windSpeed }} km/h</span>
 				</div>
 			</div>
-			<div class="row text-nowrap">
+			<div class="row">
 				<div class="col-md-6 text-center px-0">
 					<span class="fw-semibold label d-block">Temperatura</span>
 					<span class="fw-semibold info h2 text-center">{{ info.currentTemperature }}°C</span>
@@ -50,16 +50,15 @@ const props = defineProps(['info']);
 
 <style scoped lang="scss">
 .info-container {
-	justify-content: center;
-
 	@media (max-width: 767px) {
 		display: flex;
+		justify-content: center;
 	}
 }
 
 .row {
 	.row:nth-child(3) {
-		@media (max-height: 650px) {
+		@media (max-height: 700px) and (orientation: landscape) {
 			display: none;
 		}
 	}
@@ -113,6 +112,10 @@ const props = defineProps(['info']);
 
 	@media (max-height: 600px) or (max-width: 1400px) {
 		font-size: 1.15rem;
+	}
+
+	@media (max-height: 500px) or (max-width: 991px) {
+		font-size: 1rem;
 	}
 
 	@media (orientation: portrait) and (min-width: 768px) {
