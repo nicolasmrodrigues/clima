@@ -50,9 +50,10 @@ const props = defineProps(['info']);
 
 <style scoped lang="scss">
 .info-container {
+	justify-content: center;
+
 	@media (max-width: 767px) {
 		display: flex;
-		justify-content: center;
 	}
 }
 
@@ -153,6 +154,7 @@ const props = defineProps(['info']);
 
 	@media (max-width: 767px) {
 		margin-top: 32px;
+		padding: 0;
 	}
 }
 </style>
