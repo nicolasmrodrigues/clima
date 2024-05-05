@@ -1,14 +1,18 @@
 <script setup>
 // eslint-disable-next-line no-unused-vars
 const props = defineProps(['info']);
+
+const formatCityName = (name) => {
+	return name.replace('%20', ' ');
+};
 </script>
 
 <template>
-	<div class="col-xl-4 col-md-5 col-sm-12 weather-card d-inline-block">
+	<div class="col-xl-4 col-md-5 col-sm-12 weather-card d-inline-block mt-4">
 		<div class="container">
 			<div class="row">
 				<div class="col-md-12 text-center local-time">
-					<span class="d-block" v-if="info.localDateFormatted">Horário de {{ info.requestedCity }}: </span>
+					<span class="d-block" v-if="info.localDateFormatted">Horário de {{ formatCityName(info.requestedCity) }}: </span>
 					<span v-if="info.localDateFormatted">{{ info.localDateFormatted }}</span>
 				</div>
 			</div>
@@ -141,8 +145,6 @@ const props = defineProps(['info']);
 }
 
 .weather-card {
-	margin-top: 48px;
-
 	@media (orientation: portrait) {
 		flex: 0 0 auto;
 		width: 100%;
